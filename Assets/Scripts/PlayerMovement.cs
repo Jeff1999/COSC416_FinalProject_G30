@@ -16,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip crashSound;
     public AudioClip turnSound;
 
+    // Crash animation references
+    public Sprite[] crashAnimationFrames;
+
     private AudioSource audioSource;
     private AudioSource turnAudioSource;
 
@@ -125,6 +128,16 @@ public class PlayerMovement : MonoBehaviour
             audioSource.Play();
         }
 
+        // Trigger crash animation
+        if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+        {
+            CrashAnimationController crashAnimation = FindObjectOfType<CrashAnimationController>();
+            if (crashAnimation != null)
+            {
+                crashAnimation.StartCrashAnimation(transform.position);
+            }
+        }
+
         // Stop the player
         speed = 0;
         isGameOver = true;
@@ -143,5 +156,4 @@ public class PlayerMovement : MonoBehaviour
         SceneManager.LoadScene(currentScene.name);
     }
 }
-
 
