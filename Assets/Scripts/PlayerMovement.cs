@@ -12,6 +12,13 @@ public class PlayerMovement : MonoBehaviour
     // Reference to Game Over UI
     public GameObject gameOverText;
 
+    // Add crash and turn sound references
+    public AudioClip crashSound;
+    public AudioClip turnSound;
+
+    private AudioSource audioSource;
+    private AudioSource turnAudioSource;
+
     void Start()
     {
         // Make sure Game Over UI is hidden at start
@@ -19,6 +26,14 @@ public class PlayerMovement : MonoBehaviour
         {
             gameOverText.SetActive(false);
         }
+
+        // Set up crash sound audio source
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+
+        // Set up turn sound audio source
+        turnAudioSource = gameObject.AddComponent<AudioSource>();
+        turnAudioSource.playOnAwake = false;
     }
 
     void Update()
@@ -27,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
         {
             // Regular movement
             transform.position += new Vector3(moveDirection.x, moveDirection.y, 0) * speed * Time.deltaTime;
-
             // Handle input for turning
             if (canTurn)
             {
@@ -53,26 +67,36 @@ public class PlayerMovement : MonoBehaviour
 
     void TurnLeft()
     {
+        // Play turn sound
+        if (turnSound != null && turnAudioSource != null)
+        {
+            turnAudioSource.clip = turnSound;
+            turnAudioSource.Play();
+        }
+
         // Rotate the sprite
         transform.Rotate(0, 0, 90);
-
         // Update movement direction
         Vector2 newDir = new Vector2(-moveDirection.y, moveDirection.x);
         moveDirection = newDir;
-
         // Prevent multiple turns in the same frame
         StartCoroutine(TurnCooldown());
     }
 
     void TurnRight()
     {
+        // Play turn sound
+        if (turnSound != null && turnAudioSource != null)
+        {
+            turnAudioSource.clip = turnSound;
+            turnAudioSource.Play();
+        }
+
         // Rotate the sprite
         transform.Rotate(0, 0, -90);
-
         // Update movement direction
         Vector2 newDir = new Vector2(moveDirection.y, -moveDirection.x);
         moveDirection = newDir;
-
         // Prevent multiple turns in the same frame
         StartCoroutine(TurnCooldown());
     }
@@ -86,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Wall") && !isGameOver)
+        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder")) && !isGameOver)
         {
             GameOver();
         }
@@ -94,16 +118,21 @@ public class PlayerMovement : MonoBehaviour
 
     void GameOver()
     {
+        // Play crash sound
+        if (crashSound != null && audioSource != null)
+        {
+            audioSource.clip = crashSound;
+            audioSource.Play();
+        }
+
         // Stop the player
         speed = 0;
         isGameOver = true;
-
         // Show Game Over UI
         if (gameOverText != null)
         {
             gameOverText.SetActive(true);
         }
-
         Debug.Log("Game Over! Press R to restart.");
     }
 
@@ -114,4 +143,5 @@ public class PlayerMovement : MonoBehaviour
         SceneManager.LoadScene(currentScene.name);
     }
 }
+
 

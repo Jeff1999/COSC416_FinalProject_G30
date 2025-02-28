@@ -1317,6 +1317,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   gameOverText: {fileID: 474664901}
+  crashSound: {fileID: 8300000, guid: 4e7c840766d7bd4469cec726b0012d0a, type: 3}
+  turnSound: {fileID: 8300000, guid: efb09c83f22fb38438e438573be06b47, type: 3}
 --- !u!61 &1407752549
 BoxCollider2D:
   m_ObjectHideFlags: 0
