@@ -1,27 +1,52 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement; // For scene reloading
 
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     private Vector2 moveDirection = Vector2.up; // Start moving upward
     private bool canTurn = true;
+    private bool isGameOver = false;
+
+    // Reference to Game Over UI
+    public GameObject gameOverText;
+
+    void Start()
+    {
+        // Make sure Game Over UI is hidden at start
+        if (gameOverText != null)
+        {
+            gameOverText.SetActive(false);
+        }
+    }
 
     void Update()
     {
-        // Handle movement
-        transform.position += new Vector3(moveDirection.x, moveDirection.y, 0) * speed * Time.deltaTime;
-
-        // Handle input for turning
-        if (canTurn)
+        if (!isGameOver)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            // Regular movement
+            transform.position += new Vector3(moveDirection.x, moveDirection.y, 0) * speed * Time.deltaTime;
+
+            // Handle input for turning
+            if (canTurn)
             {
-                TurnLeft();
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    TurnLeft();
+                }
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    TurnRight();
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
+        }
+        else
+        {
+            // Check for R key press to restart when game is over
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                TurnRight();
+                RestartGame();
             }
         }
     }
@@ -61,15 +86,32 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Collision with: " + other.gameObject.name + " Tag: " + other.gameObject.tag);
-
-        // Handle collisions with walls
-        if (other.CompareTag("Wall"))
+        if (other.CompareTag("Wall") && !isGameOver)
         {
-            // Stop movement
-            speed = 0;
-            enabled = false;
-            Debug.Log("Game Over! Hit a wall.");
+            GameOver();
         }
     }
+
+    void GameOver()
+    {
+        // Stop the player
+        speed = 0;
+        isGameOver = true;
+
+        // Show Game Over UI
+        if (gameOverText != null)
+        {
+            gameOverText.SetActive(true);
+        }
+
+        Debug.Log("Game Over! Press R to restart.");
+    }
+
+    void RestartGame()
+    {
+        // Reload the current scene
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
+    }
 }
+
