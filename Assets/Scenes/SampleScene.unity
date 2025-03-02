@@ -632,7 +632,7 @@ MonoBehaviour:
 
 
 
-    Press "R" to Play Again!'
+    Press "R" to Restart!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
   m_sharedMaterial: {fileID: -2431143938904986706, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
@@ -1410,6 +1410,7 @@ GameObject:
   - component: {fileID: 1407752549}
   - component: {fileID: 1407752548}
   - component: {fileID: 1407752552}
+  - component: {fileID: 1407752553}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1430,6 +1431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
+  isGameOver: 0
   gameOverText: {fileID: 474664901}
   crashSound: {fileID: 8300000, guid: 4e7c840766d7bd4469cec726b0012d0a, type: 3}
   turnSound: {fileID: 8300000, guid: efb09c83f22fb38438e438573be06b47, type: 3}
@@ -1587,6 +1589,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1407752553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407752547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e8cfd8589ec04e91ed26e9e155420, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trailSegmentLength: 0.01
+  lineWidth: 0.2
+  trailColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &1910221979
 GameObject:
   m_ObjectHideFlags: 0

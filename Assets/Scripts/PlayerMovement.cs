@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 5f;
     private Vector2 moveDirection = Vector2.up; // Start moving upward
     private bool canTurn = true;
-    private bool isGameOver = false;
+    public bool isGameOver = false; // Made public for TrailGenerator
 
     // Reference to Game Over UI
     public GameObject gameOverText;
@@ -113,11 +113,18 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder")) && !isGameOver)
+        Debug.Log(
+          $"COLLISION:\n" +
+          $"  Player Name: {gameObject.name}, Position: {transform.position}\n" +
+          $"  Other Name: {other.gameObject.name}, Position: {other.transform.position}"
+        );
+
+        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail")) && !isGameOver)
         {
             GameOver();
         }
     }
+
 
     void GameOver()
     {
@@ -131,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
         // Trigger crash animation
         if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
         {
-            CrashAnimationController crashAnimation = FindObjectOfType<CrashAnimationController>();
+            CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
             if (crashAnimation != null)
             {
                 crashAnimation.StartCrashAnimation(transform.position);
@@ -156,4 +163,3 @@ public class PlayerMovement : MonoBehaviour
         SceneManager.LoadScene(currentScene.name);
     }
 }
-

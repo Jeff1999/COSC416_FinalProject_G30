@@ -2,15 +2,19 @@ using UnityEngine;
 
 public class DontDestroyMusic : MonoBehaviour
 {
+    private static DontDestroyMusic instance;
+
     void Awake()
     {
-        // Keep this object alive between scene loads
-        DontDestroyOnLoad(gameObject);
-
-        // Prevent duplicate music managers if scene reloads
-        if (FindObjectsOfType<DontDestroyMusic>().Length > 1)
+        // If an instance already exists and it's not this, destroy this one
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        // Otherwise, make this the instance and persist
+        instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 }
