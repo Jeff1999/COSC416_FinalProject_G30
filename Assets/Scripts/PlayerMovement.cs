@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement; // For scene reloading
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
-    private Vector2 moveDirection = Vector2.up; // Start moving upward
+    private Vector2 moveDirection; // We'll set this in Start() based on rotation
     private bool canTurn = true;
     public bool isGameOver = false; // Made public for TrailGenerator
 
@@ -24,6 +24,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // Set initial movement direction based on rotation
+        float angle = transform.eulerAngles.z * Mathf.Deg2Rad;
+        moveDirection = new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle));
+
         // Make sure Game Over UI is hidden at start
         if (gameOverText != null)
         {
