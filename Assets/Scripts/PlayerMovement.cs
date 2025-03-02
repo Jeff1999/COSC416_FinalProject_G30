@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     private AudioSource audioSource;
     private AudioSource turnAudioSource;
+    private GameController gameController;
 
     void Start()
     {
@@ -41,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
         // Set up turn sound audio source
         turnAudioSource = gameObject.AddComponent<AudioSource>();
         turnAudioSource.playOnAwake = false;
+        gameController = FindFirstObjectByType<GameController>();
     }
 
     void Update()
@@ -129,7 +131,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     void GameOver()
     {
         // Play crash sound
@@ -152,12 +153,21 @@ public class PlayerMovement : MonoBehaviour
         // Stop the player
         speed = 0;
         isGameOver = true;
-        // Show Game Over UI
-        if (gameOverText != null)
+
+        // Notify GameController that player crashed
+        if (gameController != null)
         {
-            gameOverText.SetActive(true);
+            gameController.PlayerCrashed();
         }
-        Debug.Log("Game Over! Press R to restart.");
+        else
+        {
+            // Fallback if no GameController
+            if (gameOverText != null)
+            {
+                gameOverText.SetActive(true);
+            }
+            Debug.Log("Game Over! Press R to restart.");
+        }
     }
 
     void RestartGame()
