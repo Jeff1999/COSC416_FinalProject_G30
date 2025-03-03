@@ -22,7 +22,6 @@ public class AIController : MonoBehaviour
     // Direction checking
     private Vector2 lastTurnDirection;
     private int consecutiveTurns = 0;
-    private int maxConsecutiveTurns = 3;
     private List<Vector2> recentDirections = new List<Vector2>();
 
     // Emergency handling

@@ -1706,7 +1706,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1723,9 +1723,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 549668911}
   - {fileID: 474664902}
   - {fileID: 453244059}
-  - {fileID: 549668911}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2093,13 +2093,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   isGameOver: 0
-  forwardRayDistance: 12
-  sideRayDistance: 8
-  decisionRate: 0.1
+  forwardRayDistance: 25
+  sideRayDistance: 15
+  diagonalRayDistance: 16
+  emergencyRayDistance: 15
   obstacleTags:
   - Wall
   - Trail
   - OpponentBorder
+  playerTransform: {fileID: 1407752551}
   gameOverText: {fileID: 453244056}
   crashSound: {fileID: 8300000, guid: 4e7c840766d7bd4469cec726b0012d0a, type: 3}
   turnSound: {fileID: 8300000, guid: efb09c83f22fb38438e438573be06b47, type: 3}
