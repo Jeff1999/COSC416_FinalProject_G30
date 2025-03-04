@@ -4,46 +4,89 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
-    public TextMeshProUGUI selectionArrow; // Main menu arrow
-    public GameObject mainMenuPanel; // Main menu UI
-    public GameObject controlsPanel; // Controls UI
-    public TextMeshProUGUI selectionArrowCP; // Arrow in Controls
-    public GameObject gameModePanel; // Game Mode selection UI
-    public TextMeshProUGUI selectionArrowGM; // Arrow in Game Mode selection
+    // **Main Menu Elements**
+    public TextMeshProUGUI selectionArrow;
+    public GameObject mainMenuPanel;
 
-    private float startY; // Main Menu Arrow's original Y position
-    private float stepSize = 136f; // Movement step for Main Menu
-    private int selectedIndex = 0; // Selected option in Main Menu
-    private int menuLength = 3; // Number of Main Menu options
-    private bool isOnControlsPage = false; // Tracks if on Controls Page
-    private bool isSelectingMode = false; // Tracks if on Game Mode Page
-    private int modeIndex = 0; // 0 = 1P, 1 = 2P, 2 = Return
-    private float gameModeStartY; // Initial Y for Game Mode Arrow
-    private float gameModeStepSize = 136f; // Movement step for Game Mode Selection
+    // **Controls Page Elements**
+    public GameObject controlsPanel;
+    public TextMeshProUGUI selectionArrowCP;
+
+    // **Game Mode Selection Elements**
+    public GameObject gameModePanel;
+    public TextMeshProUGUI selectionArrowGM;
+
+    // **Difficulty Selection Elements**
+    public GameObject difficultySelectionPanel;
+    public TextMeshProUGUI selectionArrowDP;
+
+    // **Selection Tracking Variables**
+    private float startY;
+    private float stepSize = 136f;
+    private int selectedIndex = 0;
+    private int menuLength = 3;
+
+    private bool isOnControlsPage = false;
+    private bool isSelectingMode = false;
+    private bool isSelectingDifficulty = false;
+
+    private int modeIndex = 0; // Game Mode Selection (1P, 2P, Return)
+    private float gameModeStartY;
+    private float gameModeStepSize = 136f;
+
+    private int difficultyIndex = 0; // Difficulty Selection (Beginner, Easy, Medium, Hard, Expert, Return)
+    private float difficultyStartY;
+    private float difficultyStepSize = 136f;
 
     void Start()
     {
-        startY = selectionArrow.transform.position.y; // Store Main Menu Arrow position
-        gameModeStartY = selectionArrowGM.transform.position.y; // Store Game Mode Arrow position
+        startY = selectionArrow.transform.position.y;
+        gameModeStartY = selectionArrowGM.transform.position.y;
+        difficultyStartY = selectionArrowDP.transform.position.y;
 
-        controlsPanel.SetActive(false); // Hide Controls Panel initially
-        gameModePanel.SetActive(false); // Hide Game Mode Panel initially
+        // **Hide all non-main menu panels at start**
+        controlsPanel.SetActive(false);
+        gameModePanel.SetActive(false);
+        difficultySelectionPanel.SetActive(false);
     }
 
     void Update()
     {
+        // **Difficulty Selection Logic**
+        if (isSelectingDifficulty)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                difficultyIndex = (difficultyIndex - 1 + 6) % 6;
+                UpdateDifficultySelection();
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                difficultyIndex = (difficultyIndex + 1) % 6;
+                UpdateDifficultySelection();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                ConfirmDifficultySelection();
+            }
+
+            return;
+        }
+
         // **Game Mode Selection Logic**
         if (isSelectingMode)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                modeIndex = (modeIndex - 1 + 3) % 3; // Wraps around between 0, 1, 2
+                modeIndex = (modeIndex - 1 + 3) % 3;
                 UpdateModeSelection();
             }
 
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                modeIndex = (modeIndex + 1) % 3; // Wraps around between 0, 1, 2
+                modeIndex = (modeIndex + 1) % 3;
                 UpdateModeSelection();
             }
 
@@ -52,7 +95,7 @@ public class MainMenuController : MonoBehaviour
                 ConfirmPlayerMode();
             }
 
-            return; // Stop Main Menu input when selecting mode
+            return;
         }
 
         // **Controls Page Logic**
@@ -62,7 +105,7 @@ public class MainMenuController : MonoBehaviour
             {
                 CloseControlsPage();
             }
-            return; // Stop Main Menu input when on Controls Page
+            return;
         }
 
         // **Main Menu Navigation**
@@ -84,6 +127,7 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
+    // **Main Menu Methods**
     void UpdateSelection()
     {
         selectionArrow.transform.position = new Vector3(
@@ -96,15 +140,15 @@ public class MainMenuController : MonoBehaviour
     {
         switch (selectedIndex)
         {
-            case 0: // Start Game (Opens Game Mode Selection)
+            case 0:
                 Debug.Log("Opening Game Mode Selection...");
                 OpenPlayerModeSelection();
                 break;
-            case 1: // Open Controls Page
+            case 1:
                 Debug.Log("Opening Controls...");
                 OpenControlsPage();
                 break;
-            case 2: // Exit Game
+            case 2:
                 Debug.Log("Exiting Game...");
                 QuitGame();
                 break;
@@ -129,7 +173,6 @@ public class MainMenuController : MonoBehaviour
     {
         Debug.Log("Quitting Game...");
         Application.Quit();
-
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
@@ -155,12 +198,12 @@ public class MainMenuController : MonoBehaviour
         if (modeIndex == 0)
         {
             Debug.Log("1 Player Mode Selected. Moving to Difficulty Selection...");
-            SceneManager.LoadScene("Placeholder1P"); // Replace with actual difficulty selection scene
+            OpenDifficultySelection();
         }
         else if (modeIndex == 1)
         {
-            Debug.Log("2 Player Mode Selected. Loading 2P Match...");
-            SceneManager.LoadScene("Placeholder2P"); // Replace with actual 2P game scene
+            Debug.Log("2 Player Mode Selected. Placeholder for 2P match...");
+            // **Placeholder for actual 2P scene loading later**
         }
         else if (modeIndex == 2)
         {
@@ -177,8 +220,57 @@ public class MainMenuController : MonoBehaviour
             selectionArrowGM.transform.position.z
         );
     }
-}
 
+    // **Difficulty Selection Methods**
+    void OpenDifficultySelection()
+    {
+        isSelectingDifficulty = true;
+        gameModePanel.SetActive(false);
+        difficultySelectionPanel.SetActive(true);
+    }
+
+    void CloseDifficultySelection()
+    {
+        isSelectingDifficulty = false;
+        difficultySelectionPanel.SetActive(false);
+        gameModePanel.SetActive(true);
+    }
+
+    void ConfirmDifficultySelection()
+    {
+        switch (difficultyIndex)
+        {
+            case 0:
+                Debug.Log("Beginner Mode Selected. Placeholder for game start...");
+                break;
+            case 1:
+                Debug.Log("Easy Mode Selected. Placeholder for game start...");
+                break;
+            case 2:
+                Debug.Log("Medium Mode Selected. Placeholder for game start...");
+                break;
+            case 3:
+                Debug.Log("Hard Mode Selected. Placeholder for game start...");
+                break;
+            case 4:
+                Debug.Log("Expert Mode Selected. Placeholder for game start...");
+                break;
+            case 5:
+                Debug.Log("Returning to Game Mode Selection...");
+                CloseDifficultySelection();
+                break;
+        }
+    }
+
+    void UpdateDifficultySelection()
+    {
+        selectionArrowDP.transform.position = new Vector3(
+            selectionArrowDP.transform.position.x,
+            difficultyStartY - (difficultyIndex * difficultyStepSize),
+            selectionArrowDP.transform.position.z
+        );
+    }
+}
 
 
 
