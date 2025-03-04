@@ -14,6 +14,9 @@ public class GameController : MonoBehaviour
     public GameObject player1WinsText;  // Your existing Player1WinsText
     public GameObject player2WinsText;  // Your existing Player2WinsText
 
+    [Header("Scene Navigation")]
+    public string mainMenuSceneName = "MainMenuScene"; // Name of your main menu scene
+
     private PlayerMovement playerMovement;
     private AIController aiController;
     private bool gameOver = false;
@@ -29,7 +32,6 @@ public class GameController : MonoBehaviour
         {
             player1WinsText.SetActive(false);
         }
-
         if (player2WinsText != null)
         {
             player2WinsText.SetActive(false);
@@ -46,7 +48,6 @@ public class GameController : MonoBehaviour
     public void PlayerCrashed()
     {
         if (gameOver) return;
-
         gameOver = true;
 
         // Stop AI movement too
@@ -73,7 +74,6 @@ public class GameController : MonoBehaviour
     public void AIPlayerCrashed()
     {
         if (gameOver) return;
-
         gameOver = true;
 
         // Stop player movement too
@@ -98,10 +98,19 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        // Detect 'R' key to restart game
-        if (gameOver && Input.GetKeyDown(KeyCode.R))
+        if (gameOver)
         {
-            RestartGame();
+            // Detect 'R' key to restart game
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                RestartGame();
+            }
+
+            // Detect 'T' key to return to difficulty selection
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                ReturnToDifficultySelection();
+            }
         }
     }
 
@@ -110,5 +119,17 @@ public class GameController : MonoBehaviour
         // Reload the current scene
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
+    }
+
+    void ReturnToDifficultySelection()
+    {
+        Debug.Log("Returning to Difficulty Selection Panel...");
+
+        // Set PlayerPrefs flag to indicate we want to open difficulty panel
+        PlayerPrefs.SetInt("ShowDifficultyPanel", 1);
+        PlayerPrefs.Save();
+
+        // Load the main menu scene
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 }

@@ -20,6 +20,10 @@ public class MainMenuController : MonoBehaviour
     public GameObject difficultySelectionPanel;
     public TextMeshProUGUI selectionArrowDP;
 
+    // **Scene Paths**
+    [Header("Scene Paths")]
+    public string beginnerScenePath = "Assets/Scenes/BeginnerScene.unity"; // Set this in the Inspector if needed
+
     // **Selection Tracking Variables**
     private float startY;
     private float stepSize = 136f;
@@ -48,6 +52,20 @@ public class MainMenuController : MonoBehaviour
         controlsPanel.SetActive(false);
         gameModePanel.SetActive(false);
         difficultySelectionPanel.SetActive(false);
+
+        // Check if we should go directly to difficulty selection panel
+        if (PlayerPrefs.GetInt("ShowDifficultyPanel", 0) == 1)
+        {
+            // Clear the flag
+            PlayerPrefs.DeleteKey("ShowDifficultyPanel");
+            PlayerPrefs.Save();
+
+            // Open game mode selection first
+            OpenPlayerModeSelection();
+
+            // Then open difficulty selection
+            OpenDifficultySelection();
+        }
     }
 
     void Update()
@@ -241,19 +259,25 @@ public class MainMenuController : MonoBehaviour
         switch (difficultyIndex)
         {
             case 0:
-                Debug.Log("Beginner Mode Selected. Placeholder for game start...");
+                Debug.Log("Beginner Mode Selected. Loading BeginnerScene...");
+                // Load the beginner scene by path
+                SceneManager.LoadSceneAsync(beginnerScenePath);
                 break;
             case 1:
                 Debug.Log("Easy Mode Selected. Placeholder for game start...");
+                // TODO: Load Easy difficulty scene when ready
                 break;
             case 2:
                 Debug.Log("Medium Mode Selected. Placeholder for game start...");
+                // TODO: Load Medium difficulty scene when ready
                 break;
             case 3:
                 Debug.Log("Hard Mode Selected. Placeholder for game start...");
+                // TODO: Load Hard difficulty scene when ready
                 break;
             case 4:
                 Debug.Log("Expert Mode Selected. Placeholder for game start...");
+                // TODO: Load Expert difficulty scene when ready
                 break;
             case 5:
                 Debug.Log("Returning to Game Mode Selection...");
@@ -271,6 +295,8 @@ public class MainMenuController : MonoBehaviour
         );
     }
 }
+
+
 
 
 

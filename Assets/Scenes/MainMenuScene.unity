@@ -156,6 +156,7 @@ MonoBehaviour:
   selectionArrowGM: {fileID: 1176557173}
   difficultySelectionPanel: {fileID: 1626103963}
   selectionArrowDP: {fileID: 801419298}
+  beginnerScenePath: Assets/Scenes/BeginnerScene.unity
 --- !u!4 &8260232
 Transform:
   m_ObjectHideFlags: 0
@@ -706,7 +707,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 310, y: 416}
+  m_SizeDelta: {x: 304, y: 404}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &293985397
 MonoBehaviour:
@@ -746,6 +747,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 293985395}
   m_CullTransparentMesh: 1
+--- !u!1 &296186283
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 296186284}
+  - component: {fileID: 296186285}
+  m_Layer: 0
+  m_Name: MainMenuMusicManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &296186284
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296186283}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.4800388, y: 0.13691777, z: 0.46038675}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &296186285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296186283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ea78e973f1fa084eae30d28831ae430, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuMusic: {fileID: 8300000, guid: c5ba9a7a3d71b674482f50ce9e7b3872, type: 3}
+  menuMusicVolume: 0.523
+  mainMenuSceneName: MainMenuScene
 --- !u!1 &328931560
 GameObject:
   m_ObjectHideFlags: 0
@@ -8340,3 +8388,4 @@ SceneRoots:
   - {fileID: 1062652004}
   - {fileID: 667673673}
   - {fileID: 8260232}
+  - {fileID: 296186284}
