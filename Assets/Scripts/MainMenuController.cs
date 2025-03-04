@@ -4,34 +4,48 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
-    public TextMeshProUGUI selectionArrow;  // Reference to the arrow
-    private float startY;  // Store the starting Y position
-    private float stepSize = 148f;  // Move exactly 148 pixels per step
-    private int selectedIndex = 0;  // Track selection (0 = Start, 1 = Controls, 2 = Exit)
-    private int menuLength = 3; // Total number of menu options
+    public TextMeshProUGUI selectionArrow; // Reference to the arrow
+    public GameObject mainMenuPanel; // Main menu UI panel
+    public GameObject controlsPanel; // Controls page UI panel
+    public TextMeshProUGUI selectionArrowCP; // Selection arrow on controls page
+
+    private float startY; // Stores the original Y position of the selection arrow
+    private float stepSize = 148f; // Moves exactly 148 pixels per step
+    private int selectedIndex = 0; // Tracks which menu option is selected
+    private int menuLength = 3; // Number of options in the main menu
+    private bool isOnControlsPage = false; // Tracks whether we're in the Controls Page
 
     void Start()
     {
-        startY = selectionArrow.transform.position.y; // Store where it starts
+        startY = selectionArrow.transform.position.y; // Store starting Y position
+        controlsPanel.SetActive(false); // Hide controls panel at the start
     }
 
     void Update()
     {
-        // Move Up
+        if (isOnControlsPage)
+        {
+            // Controls Page Navigation: Press Enter or Escape to return to Main Menu
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                CloseControlsPage();
+            }
+            return; // Prevents main menu input from interfering while in Controls Page
+        }
+
+        // Menu Navigation
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             selectedIndex = (selectedIndex - 1 + menuLength) % menuLength;
             UpdateSelection();
         }
 
-        // Move Down
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             selectedIndex = (selectedIndex + 1) % menuLength;
             UpdateSelection();
         }
 
-        // Select Option
         if (Input.GetKeyDown(KeyCode.Return))
         {
             SelectOption();
@@ -40,10 +54,9 @@ public class MainMenuController : MonoBehaviour
 
     void UpdateSelection()
     {
-        // Moves exactly 148 pixels up/down based on index
         selectionArrow.transform.position = new Vector3(
-            selectionArrow.transform.position.x, // Keep X position fixed
-            startY - (selectedIndex * stepSize), // Move in steps of 148 pixels
+            selectionArrow.transform.position.x,
+            startY - (selectedIndex * stepSize),
             selectionArrow.transform.position.z);
     }
 
@@ -51,29 +64,40 @@ public class MainMenuController : MonoBehaviour
     {
         switch (selectedIndex)
         {
-            case 0:
+            case 0: // Start Game
                 Debug.Log("Starting Game...");
-                SceneManager.LoadScene("GameScene"); // Change "GameScene" to your actual game scene name
+                SceneManager.LoadScene("GameScene"); // Change "GameScene" to your actual game scene
                 break;
-            case 1:
+            case 1: // Open Controls Page
                 Debug.Log("Opening Controls...");
+                OpenControlsPage();
                 break;
-            case 2:
+            case 2: // Exit Game
                 Debug.Log("Exiting Game...");
-                QuitGame(); // Calls a separate Quit function
+                QuitGame();
                 break;
         }
     }
 
-    // Handles quitting the game
+    void OpenControlsPage()
+    {
+        isOnControlsPage = true;
+        mainMenuPanel.SetActive(false); // Hide Main Menu
+        controlsPanel.SetActive(true); // Show Controls Page
+    }
+
+    void CloseControlsPage()
+    {
+        isOnControlsPage = false;
+        controlsPanel.SetActive(false); // Hide Controls Page
+        mainMenuPanel.SetActive(true); // Show Main Menu
+    }
+
     void QuitGame()
     {
         Debug.Log("Quitting Game...");
-
-        // Properly quits when running a built application
         Application.Quit();
 
-        // If running inside the Unity Editor, stop playing instead of quitting
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
