@@ -867,10 +867,17 @@ public class AIController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Player") && other.gameObject.name == "Player" && !isGameOver)
+        {
+            // Let the player handle the tie condition
+            return;
+        }
+
         if ((other.CompareTag("Wall") || other.CompareTag("Trail")) && !isGameOver)
         {
             GameOver();
         }
+
     }
 
     void GameOver()

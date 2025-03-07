@@ -125,9 +125,60 @@ public class PlayerMovement : MonoBehaviour
           $"  Other Name: {other.gameObject.name}, Position: {other.transform.position}"
         );
 
+        // Check for player-to-player collision (tie case)
+        if (other.CompareTag("Player") && !isGameOver)
+        {
+            // Only handle tie condition if this is the player (not the AI) to avoid double-processing
+            if (gameObject.name == "Player")
+            {
+                HandleTie();
+            }
+            return; // Don't process further if it's a tie
+        }
+
+        // Normal crash conditions
         if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail")) && !isGameOver)
         {
             GameOver();
+        }
+    }
+
+    void HandleTie()
+    {
+        // Play crash sound
+        if (crashSound != null && audioSource != null)
+        {
+            audioSource.clip = crashSound;
+            audioSource.Play();
+        }
+
+        // Trigger crash animation
+        if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+        {
+            CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+            if (crashAnimation != null)
+            {
+                crashAnimation.StartCrashAnimation(transform.position);
+            }
+        }
+
+        // Stop the player
+        speed = 0;
+        isGameOver = true;
+
+        // Notify GameController that it's a tie
+        if (gameController != null)
+        {
+            gameController.TieGame();
+        }
+        else
+        {
+            // Fallback if no GameController
+            if (gameOverText != null)
+            {
+                gameOverText.SetActive(true);
+            }
+            Debug.Log("Tie Game! Press R to restart.");
         }
     }
 

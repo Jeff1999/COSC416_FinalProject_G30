@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     public GameObject gameOverPanel;       // Your existing GameOverPanel
     public TextMeshProUGUI player1WinsText; // Your existing Player1WinsText
     public TextMeshProUGUI player2WinsText; // Your existing Player2WinsText
+    public TextMeshProUGUI tieGameText;    // New UI element for tie notifications
 
     [Header("Score UI")]
     public TextMeshProUGUI scoreTextPlayer1; // Your existing ScoreTextPlayer1
@@ -53,11 +54,45 @@ public class GameController : MonoBehaviour
         {
             player2WinsText.gameObject.SetActive(false);
         }
+        if (tieGameText != null)
+        {
+            tieGameText.gameObject.SetActive(false);
+        }
 
         // Hide game over panel at start
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(false);
+        }
+
+        // Add player tag collision detection
+        SetupPlayerCollision();
+    }
+
+    void SetupPlayerCollision()
+    {
+        // Make sure both player and AI have the "Player" tag for collision detection
+        if (player != null && !player.CompareTag("Player"))
+        {
+            player.tag = "Player";
+        }
+
+        if (aiPlayer != null && !aiPlayer.CompareTag("Player"))
+        {
+            aiPlayer.tag = "Player";
+        }
+
+        // Make sure they have colliders
+        if (player != null && player.GetComponent<Collider2D>() == null)
+        {
+            BoxCollider2D collider = player.AddComponent<BoxCollider2D>();
+            collider.isTrigger = true;
+        }
+
+        if (aiPlayer != null && aiPlayer.GetComponent<Collider2D>() == null)
+        {
+            BoxCollider2D collider = aiPlayer.AddComponent<BoxCollider2D>();
+            collider.isTrigger = true;
         }
     }
 
@@ -90,6 +125,44 @@ public class GameController : MonoBehaviour
             // Add more space between Player and Score with extra newlines
             scoreTextPlayer2.text = "Player 2\n\n\nScore: " + player2Score;
         }
+    }
+
+    // Called when both players collide (tie)
+    public void TieGame()
+    {
+        if (gameOver) return;
+        gameOver = true;
+
+        // Stop both players
+        if (playerMovement != null)
+        {
+            playerMovement.isGameOver = true;
+            playerMovement.speed = 0;
+        }
+
+        if (aiController != null)
+        {
+            aiController.isGameOver = true;
+            aiController.speed = 0;
+        }
+
+        // Show Tie Game text
+        if (tieGameText != null)
+        {
+            tieGameText.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Tie Game text is not assigned in the GameController!");
+        }
+
+        // Show game over panel
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+
+        // Note: we don't change scores in a tie
     }
 
     // Called when the player crashes
