@@ -16,7 +16,7 @@ public class WorkingTrailGenerator : MonoBehaviour
     private bool isFirstFrame = true;
     private Vector3 lastDirection;
 
-    void Start()
+    public void Start()
     {
         if (playerTransform == null)
         {

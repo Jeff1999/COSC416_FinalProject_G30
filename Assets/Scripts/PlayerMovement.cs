@@ -62,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
         jumpAudioSource = gameObject.AddComponent<AudioSource>();
         jumpAudioSource.playOnAwake = false;
+        jumpAudioSource.volume = 0.4f;
 
         // Get references
         gameController = FindFirstObjectByType<GameController>();
@@ -186,28 +187,77 @@ public class PlayerMovement : MonoBehaviour
 
         // 1. Store current position
         Vector3 startPosition = transform.position;
+        Vector3 endPosition = startPosition + new Vector3(jumpDirection.x, jumpDirection.y, 0) * jumpDistance;
 
-        // 2. Handle the trail - this will save current trail and create new components
+        // 2. Start jump animation BEFORE teleporting
+        if (jumpAnimationFrames != null && jumpAnimationFrames.Length > 0 && spriteRenderer != null)
+        {
+            StartCoroutine(PlayJumpAnimationWithTeleport(startPosition, endPosition));
+        }
+        else
+        {
+            // If no animation, just teleport immediately
+            // Handle the trail and teleport
+            if (trailManager != null)
+            {
+                trailManager.ResetTrail();
+            }
+            transform.position = endPosition;
+            CheckLandingCollisions(endPosition);
+        }
+    }
+
+    // New coroutine that handles animation and teleport timing
+    IEnumerator PlayJumpAnimationWithTeleport(Vector3 startPos, Vector3 endPos)
+    {
+        // Save the original sprite
+        Sprite savedSprite = spriteRenderer.sprite;
+
+        // Determine halfway point in the animation
+        int halfwayFrame = jumpAnimationFrames.Length / 2;
+
+        // Play first half of animation
+        for (int i = 0; i < halfwayFrame; i++)
+        {
+            spriteRenderer.sprite = jumpAnimationFrames[i];
+            yield return new WaitForSeconds(jumpAnimationSpeed);
+        }
+
+        // Reset trail and teleport at the halfway point
         if (trailManager != null)
         {
             trailManager.ResetTrail();
         }
+        transform.position = endPos;
 
-        // 3. Calculate end position
-        Vector3 endPosition = startPosition + new Vector3(jumpDirection.x, jumpDirection.y, 0) * jumpDistance;
-
-        // 4. Play jump animation if we have frames
-        if (jumpAnimationFrames != null && jumpAnimationFrames.Length > 0 && spriteRenderer != null)
+        // Check for collisions at landing position
+        bool hitSomething = CheckLandingCollisions(endPos);
+        if (hitSomething)
         {
-            StartCoroutine(PlayJumpAnimation());
+            // If collision detected, stop the animation
+            spriteRenderer.sprite = savedSprite;
+            yield break;
         }
 
-        // 5. IMMEDIATELY move to the new position
-        transform.position = endPosition;
+        // Play second half of animation
+        for (int i = halfwayFrame; i < jumpAnimationFrames.Length; i++)
+        {
+            spriteRenderer.sprite = jumpAnimationFrames[i];
+            yield return new WaitForSeconds(jumpAnimationSpeed);
+        }
 
-        // 6. Check for collisions at the landing position
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(endPosition, 0.2f);
-        bool hitSomething = false;
+        // Restore original sprite
+        spriteRenderer.sprite = savedSprite;
+
+        // Reset jumping state
+        isJumping = false;
+        StartCoroutine(JumpCooldown());
+    }
+
+    // Separated collision check function that returns a bool
+    bool CheckLandingCollisions(Vector3 landingPosition)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(landingPosition, 0.2f);
 
         foreach (var collider in colliders)
         {
@@ -220,43 +270,12 @@ public class PlayerMovement : MonoBehaviour
                 collider.CompareTag("Trail") || (collider.CompareTag("Player") && collider.gameObject != gameObject))
             {
                 // We hit something while landing
-                hitSomething = true;
                 GameOver();
-                return; // Exit early
+                return true;
             }
         }
 
-        // 7. If we landed safely, jump is complete
-        if (!hitSomething)
-        {
-            // Reset jumping state
-            isJumping = false;
-
-            // Start cooldown before allowing another jump
-            StartCoroutine(JumpCooldown());
-        }
-    }
-
-    IEnumerator PlayJumpAnimation()
-    {
-        // Save the original sprite
-        Sprite savedSprite = spriteRenderer.sprite;
-
-        // Play each frame of the jump animation
-        for (int i = 0; i < jumpAnimationFrames.Length; i++)
-        {
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.sprite = jumpAnimationFrames[i];
-            }
-            yield return new WaitForSeconds(jumpAnimationSpeed);
-        }
-
-        // Restore original sprite
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sprite = savedSprite;
-        }
+        return false; // No collisions detected
     }
 
     IEnumerator JumpCooldown()

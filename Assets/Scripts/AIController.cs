@@ -15,6 +15,14 @@ public class AIController : MonoBehaviour
     public float diagonalRayDistance = 50f;  // Extended diagonal awareness
     public float emergencyRayDistance = 15f; // Dedicated emergency detection
 
+    // Jump settings
+    public float jumpDistance = 5f;
+    public float jumpCooldown = 3f;  // Longer cooldown than player to balance gameplay
+    private bool canJump = true;
+    private bool isJumping = false;
+    public AudioClip jumpSound;
+    private AudioSource jumpAudioSource;
+
     // Safety buffer - don't turn into walls on spawn
     private bool initialSafetyPeriod = true;
     private float safetyTimer = 1.0f;
@@ -33,15 +41,22 @@ public class AIController : MonoBehaviour
     // Reference to player for tracking
     public Transform playerTransform;
 
+    // Reference to the TrailManager
+    private TrailManager trailManager;
+
     // Game references
     public GameObject gameOverText;
     public AudioClip crashSound;
     public AudioClip turnSound;
     public Sprite[] crashAnimationFrames;
+    public Sprite[] jumpAnimationFrames;
+    public float jumpAnimationSpeed = 0.05f;
 
     private AudioSource audioSource;
     private AudioSource turnAudioSource;
     private GameController gameController;
+    private SpriteRenderer spriteRenderer;
+    private Sprite originalSprite;
 
     void Start()
     {
@@ -64,6 +79,10 @@ public class AIController : MonoBehaviour
         turnAudioSource = gameObject.AddComponent<AudioSource>();
         turnAudioSource.playOnAwake = false;
 
+        jumpAudioSource = gameObject.AddComponent<AudioSource>();
+        jumpAudioSource.playOnAwake = false;
+        jumpAudioSource.volume = 0.4f; 
+
         // Find GameController
         gameController = FindFirstObjectByType<GameController>();
 
@@ -77,8 +96,26 @@ public class AIController : MonoBehaviour
             }
         }
 
+        // Get the sprite renderer for jump animation
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            originalSprite = spriteRenderer.sprite;
+        }
+
+        // Get or add the TrailManager
+        trailManager = GetComponent<TrailManager>();
+        if (trailManager == null)
+        {
+            trailManager = gameObject.AddComponent<TrailManager>();
+            Debug.Log("TrailManager added to AI");
+        }
+
         // Start both decision-making systems
         StartCoroutine(DelayedStart());
+
+        // Start the jump decision coroutine
+        StartCoroutine(JumpDecisionCoroutine());
     }
 
     IEnumerator DelayedStart()
@@ -174,8 +211,11 @@ public class AIController : MonoBehaviour
     {
         if (!isGameOver)
         {
-            // Regular movement
-            transform.position += new Vector3(moveDirection.x, moveDirection.y, 0) * speed * Time.deltaTime;
+            if (!isJumping)
+            {
+                // Regular movement when not jumping
+                transform.position += new Vector3(moveDirection.x, moveDirection.y, 0) * speed * Time.deltaTime;
+            }
 
             // Update safety timer
             if (initialSafetyPeriod)
@@ -248,7 +288,7 @@ public class AIController : MonoBehaviour
         // Main decision loop
         while (!isGameOver)
         {
-            if (canTurn && !inEmergencyMode)
+            if (canTurn && !inEmergencyMode && !isJumping)
             {
                 MakeAIDecision();
             }
@@ -257,6 +297,255 @@ public class AIController : MonoBehaviour
             float decisionTime = Random.Range(0.01f, 0.03f);  // Extremely aggressive timing
             yield return new WaitForSeconds(decisionTime);
         }
+    }
+
+    // New coroutine for jump decisions
+    IEnumerator JumpDecisionCoroutine()
+    {
+        // Wait a bit for initial stability
+        yield return new WaitForSeconds(1.5f);
+
+        while (!isGameOver)
+        {
+            if (canJump && !isJumping && !inEmergencyMode)
+            {
+                ConsiderJumping();
+            }
+
+            // Check less frequently than turning decisions
+            yield return new WaitForSeconds(Random.Range(0.5f, 1.2f));
+        }
+    }
+
+    void ConsiderJumping()
+    {
+        // Don't jump during safety period
+        if (initialSafetyPeriod) return;
+
+        // Get directions
+        Vector2 leftDir = new Vector2(-moveDirection.y, moveDirection.x);
+        Vector2 rightDir = new Vector2(moveDirection.y, -moveDirection.x);
+
+        // Check if we're in a situation where jumping would be beneficial
+        bool shouldJump = false;
+        bool jumpLeft = false;
+        bool jumpRight = false;
+
+        // CASE 1: Obstacle ahead but space to jump laterally
+        if (CheckForObstacle(moveDirection, jumpDistance * 1.3f))
+        {
+            shouldJump = true;
+
+            // Check if jumping left or right is safe
+            bool leftSafe = !CheckForObstacle(leftDir, jumpDistance * 1.2f);
+            bool rightSafe = !CheckForObstacle(rightDir, jumpDistance * 1.2f);
+
+            // Decide which direction to jump if both are safe
+            if (leftSafe && rightSafe)
+            {
+                // Check player position to decide jump direction
+                if (playerTransform != null)
+                {
+                    Vector2 dirToPlayer = (playerTransform.position - transform.position).normalized;
+                    float dotLeft = Vector2.Dot(leftDir, dirToPlayer);
+                    float dotRight = Vector2.Dot(rightDir, dirToPlayer);
+
+                    // Jump in direction that might intercept player
+                    jumpLeft = dotLeft > dotRight;
+                    jumpRight = dotRight > dotLeft;
+                }
+                else
+                {
+                    // Random choice if player reference is missing
+                    jumpLeft = Random.Range(0, 2) == 0;
+                    jumpRight = !jumpLeft;
+                }
+            }
+            else
+            {
+                // Only one direction is safe
+                jumpLeft = leftSafe;
+                jumpRight = rightSafe;
+            }
+        }
+        // CASE 2: Player is in line of sight and we want to intercept
+        else if (playerTransform != null && Random.Range(0, 100) < 30)
+        {
+            Vector2 dirToPlayer = (playerTransform.position - transform.position).normalized;
+            float distance = Vector2.Distance(transform.position, playerTransform.position);
+
+            // Try to intercept if player is nearby but not too close
+            if (distance < 30f && distance > 10f)
+            {
+                float dotLeft = Vector2.Dot(leftDir, dirToPlayer);
+                float dotRight = Vector2.Dot(rightDir, dirToPlayer);
+
+                // If player is significantly to left or right, consider jumping that way
+                if (Mathf.Abs(dotLeft) > 0.6f || Mathf.Abs(dotRight) > 0.6f)
+                {
+                    shouldJump = true;
+                    jumpLeft = dotLeft > dotRight;
+                    jumpRight = dotRight > dotLeft;
+                }
+            }
+        }
+        // CASE 3: Occasional random jump for unpredictability (low chance)
+        else if (Random.Range(0, 100) < 5)
+        {
+            shouldJump = true;
+
+            // Make sure jumping direction is safe
+            bool leftSafe = !CheckForObstacle(leftDir, jumpDistance * 1.2f);
+            bool rightSafe = !CheckForObstacle(rightDir, jumpDistance * 1.2f);
+
+            if (leftSafe && rightSafe)
+            {
+                // Random choice
+                jumpLeft = Random.Range(0, 2) == 0;
+                jumpRight = !jumpLeft;
+            }
+            else
+            {
+                jumpLeft = leftSafe;
+                jumpRight = rightSafe;
+            }
+        }
+
+        // Execute jump if conditions are met
+        if (shouldJump)
+        {
+            if (jumpLeft && !CheckForObstacle(leftDir, jumpDistance * 1.2f))
+            {
+                JumpLeft();
+            }
+            else if (jumpRight && !CheckForObstacle(rightDir, jumpDistance * 1.2f))
+            {
+                JumpRight();
+            }
+        }
+    }
+
+    void JumpLeft()
+    {
+        // Calculate the jump vector (perpendicular to current direction, to the left)
+        Vector2 jumpDirection = new Vector2(-moveDirection.y, moveDirection.x);
+        ExecuteJump(jumpDirection);
+    }
+
+    void JumpRight()
+    {
+        // Calculate the jump vector (perpendicular to current direction, to the right)
+        Vector2 jumpDirection = new Vector2(moveDirection.y, -moveDirection.x);
+        ExecuteJump(jumpDirection);
+    }
+
+    void ExecuteJump(Vector2 jumpDirection)
+    {
+        // Set jumping state
+        isJumping = true;
+        canJump = false;
+
+        // Play jump sound
+        if (jumpSound != null && jumpAudioSource != null)
+        {
+            jumpAudioSource.clip = jumpSound;
+            jumpAudioSource.Play();
+        }
+
+        // 1. Store current position
+        Vector3 startPosition = transform.position;
+        Vector3 endPosition = startPosition + new Vector3(jumpDirection.x, jumpDirection.y, 0) * jumpDistance;
+
+        // 2. Start jump animation with teleport
+        if (jumpAnimationFrames != null && jumpAnimationFrames.Length > 0 && spriteRenderer != null)
+        {
+            StartCoroutine(PlayJumpAnimationWithTeleport(startPosition, endPosition));
+        }
+        else
+        {
+            // If no animation, just teleport immediately
+            if (trailManager != null)
+            {
+                trailManager.ResetTrail();
+            }
+            transform.position = endPosition;
+            CheckLandingCollisions(endPosition);
+        }
+    }
+
+    IEnumerator PlayJumpAnimationWithTeleport(Vector3 startPos, Vector3 endPos)
+    {
+        // Save the original sprite
+        Sprite savedSprite = spriteRenderer.sprite;
+
+        // Determine halfway point in the animation
+        int halfwayFrame = jumpAnimationFrames.Length / 2;
+
+        // Play first half of animation
+        for (int i = 0; i < halfwayFrame; i++)
+        {
+            spriteRenderer.sprite = jumpAnimationFrames[i];
+            yield return new WaitForSeconds(jumpAnimationSpeed);
+        }
+
+        // Reset trail and teleport at the halfway point
+        if (trailManager != null)
+        {
+            trailManager.ResetTrail();
+        }
+        transform.position = endPos;
+
+        // Check for collisions at landing position
+        bool hitSomething = CheckLandingCollisions(endPos);
+        if (hitSomething)
+        {
+            // If collision detected, stop the animation
+            spriteRenderer.sprite = savedSprite;
+            yield break;
+        }
+
+        // Play second half of animation
+        for (int i = halfwayFrame; i < jumpAnimationFrames.Length; i++)
+        {
+            spriteRenderer.sprite = jumpAnimationFrames[i];
+            yield return new WaitForSeconds(jumpAnimationSpeed);
+        }
+
+        // Restore original sprite
+        spriteRenderer.sprite = savedSprite;
+
+        // Reset jumping state
+        isJumping = false;
+        StartCoroutine(JumpCooldown());
+    }
+
+    bool CheckLandingCollisions(Vector3 landingPosition)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(landingPosition, 0.2f);
+
+        foreach (var collider in colliders)
+        {
+            // Ignore collisions with our own collider
+            if (collider.gameObject == gameObject)
+                continue;
+
+            // Check if we landed on something we shouldn't
+            if (collider.CompareTag("Wall") || collider.CompareTag("Trail") ||
+                (collider.CompareTag("Player") && collider.gameObject != gameObject))
+            {
+                // We hit something while landing
+                GameOver();
+                return true;
+            }
+        }
+
+        return false; // No collisions detected
+    }
+
+    IEnumerator JumpCooldown()
+    {
+        yield return new WaitForSeconds(jumpCooldown);
+        canJump = true;
     }
 
     void MakeAIDecision()
@@ -867,6 +1156,9 @@ public class AIController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        // Ignore collisions while jumping
+        if (isJumping) return;
+
         if (other.CompareTag("Player") && other.gameObject.name == "Player" && !isGameOver)
         {
             // Let the player handle the tie condition
@@ -877,7 +1169,6 @@ public class AIController : MonoBehaviour
         {
             GameOver();
         }
-
     }
 
     void GameOver()
@@ -910,4 +1201,5 @@ public class AIController : MonoBehaviour
         }
     }
 }
+
 

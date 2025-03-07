@@ -1589,7 +1589,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 500, y: 300}
-  m_SizeDelta: {x: 300, y: 50}
+  m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1016847377
 GameObject:
@@ -2250,12 +2250,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8051c2600b7cdbf4083f20d12a6b5dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 18
   isGameOver: 0
   gameOverText: {fileID: 474664901}
   crashSound: {fileID: 8300000, guid: 4e7c840766d7bd4469cec726b0012d0a, type: 3}
   turnSound: {fileID: 8300000, guid: efb09c83f22fb38438e438573be06b47, type: 3}
-  jumpSound: {fileID: 0}
+  jumpSound: {fileID: 8300000, guid: d418ff6de95c76246a69d427222078a9, type: 3}
   crashAnimationFrames:
   - {fileID: 6039643529123324299, guid: d1196b7fd3429fb4d950475f9ae466f7, type: 3}
   - {fileID: -8822512638252090419, guid: b058c18d5b88f7346bc0aa462ded15c2, type: 3}
@@ -2272,10 +2272,11 @@ MonoBehaviour:
   - {fileID: -1786185769569073130, guid: cce5f3305104dd240aa537d2a3441dc1, type: 3}
   - {fileID: -4419357726404363392, guid: 05f34befe0444124990195b68d436dab, type: 3}
   - {fileID: 3740677988823688901, guid: bc070bb1370595a4f9f641dae40b0917, type: 3}
-  - {fileID: -3123578253384494081, guid: 5f1bf63cd2be39a4fa753045540b0986, type: 3}
-  - {fileID: 4587255448959524995, guid: 9438c9cf151e50f4781147600e5c028f, type: 3}
-  - {fileID: 8364683527977638147, guid: 225b1a2fec6b9df43bd9f3fe129821ca, type: 3}
-  jumpAnimationSpeed: 0.05
+  - {fileID: 3740677988823688901, guid: bc070bb1370595a4f9f641dae40b0917, type: 3}
+  - {fileID: -4419357726404363392, guid: 05f34befe0444124990195b68d436dab, type: 3}
+  - {fileID: -1786185769569073130, guid: cce5f3305104dd240aa537d2a3441dc1, type: 3}
+  - {fileID: -7575001169450233029, guid: 08b4d3f73815d2047a4cba8fa6e53d9c, type: 3}
+  jumpAnimationSpeed: 0.04
   jumpDistance: 5
   jumpCooldown: 1
 --- !u!61 &1407752549
@@ -2434,6 +2435,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb47e441760b512458423eca44362723, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showDebugInfo: 1
+  jumpStartColor: {r: 1, g: 0, b: 0, a: 1}
+  jumpEndColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &1524173413
 GameObject:
   m_ObjectHideFlags: 0
@@ -2523,6 +2527,7 @@ GameObject:
   - component: {fileID: 1582703163}
   - component: {fileID: 1582703162}
   - component: {fileID: 1582703161}
+  - component: {fileID: 1582703166}
   m_Layer: 0
   m_Name: AIOpponent
   m_TagString: Player
@@ -2542,12 +2547,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bee7374a43895564494bf2b10e3cfda6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 18
   isGameOver: 0
   forwardRayDistance: 25
   sideRayDistance: 15
   diagonalRayDistance: 16
   emergencyRayDistance: 15
+  jumpDistance: 5
+  jumpCooldown: 3
+  jumpSound: {fileID: 8300000, guid: d418ff6de95c76246a69d427222078a9, type: 3}
   obstacleTags:
   - Wall
   - Trail
@@ -2567,6 +2575,16 @@ MonoBehaviour:
   - {fileID: -2873256715785124286, guid: 8d883691643ddf94d8f1efb693b176b0, type: 3}
   - {fileID: -4819271672020119073, guid: 581c6424f9873604a9ded30ed754f7f3, type: 3}
   - {fileID: -5721872728967582666, guid: c0fd4d894830c5648b71c2fd9c074656, type: 3}
+  jumpAnimationFrames:
+  - {fileID: -7575001169450233029, guid: 08b4d3f73815d2047a4cba8fa6e53d9c, type: 3}
+  - {fileID: -1786185769569073130, guid: cce5f3305104dd240aa537d2a3441dc1, type: 3}
+  - {fileID: -4419357726404363392, guid: 05f34befe0444124990195b68d436dab, type: 3}
+  - {fileID: 3740677988823688901, guid: bc070bb1370595a4f9f641dae40b0917, type: 3}
+  - {fileID: 3740677988823688901, guid: bc070bb1370595a4f9f641dae40b0917, type: 3}
+  - {fileID: -4419357726404363392, guid: 05f34befe0444124990195b68d436dab, type: 3}
+  - {fileID: -1786185769569073130, guid: cce5f3305104dd240aa537d2a3441dc1, type: 3}
+  - {fileID: -7575001169450233029, guid: 08b4d3f73815d2047a4cba8fa6e53d9c, type: 3}
+  jumpAnimationSpeed: 0.04
 --- !u!50 &1582703162
 Rigidbody2D:
   serializedVersion: 5
@@ -2711,6 +2729,21 @@ Transform:
   - {fileID: 412804046}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!114 &1582703166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582703160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb47e441760b512458423eca44362723, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showDebugInfo: 1
+  jumpStartColor: {r: 1, g: 0, b: 0, a: 1}
+  jumpEndColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &1797795055
 GameObject:
   m_ObjectHideFlags: 0
@@ -2845,7 +2878,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -500, y: 300}
-  m_SizeDelta: {x: 300, y: 50}
+  m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1910221979
 GameObject:
