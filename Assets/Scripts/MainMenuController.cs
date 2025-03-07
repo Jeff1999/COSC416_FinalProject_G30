@@ -20,6 +20,18 @@ public class MainMenuController : MonoBehaviour
     public GameObject difficultySelectionPanel;
     public TextMeshProUGUI selectionArrowDP;
 
+    // **Audio Elements**
+    [Header("Audio Settings")]
+    public AudioClip menuScrollSound;  // Assign MenuScrollSound.wav in the Inspector
+    public AudioClip menuSelectSound;  // Assign MenuSelectSound.wav in the Inspector
+    [Range(0f, 1f)]
+    public float scrollSoundVolume = 0.4f;  // Lower volume for scroll sound
+    [Range(0f, 2f)]                         // Allow up to 200% volume
+    public float selectSoundVolume = 1.2f;  // Boosted volume for select sound (120%)
+    private AudioSource audioSource;
+    [Tooltip("Enable this to amplify the select sound beyond Unity's normal volume limits")]
+    public bool useVolumeBoost = true;
+
     // **Scene Paths**
     [Header("Scene Paths")]
     public string beginnerScenePath = "Assets/Scenes/BeginnerScene.unity"; // Set this in the Inspector if needed
@@ -53,6 +65,15 @@ public class MainMenuController : MonoBehaviour
         gameModePanel.SetActive(false);
         difficultySelectionPanel.SetActive(false);
 
+        // Initialize audio source
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+
         // Check if we should go directly to difficulty selection panel
         if (PlayerPrefs.GetInt("ShowDifficultyPanel", 0) == 1)
         {
@@ -77,16 +98,19 @@ public class MainMenuController : MonoBehaviour
             {
                 difficultyIndex = (difficultyIndex - 1 + 6) % 6;
                 UpdateDifficultySelection();
+                PlayScrollSound();
             }
 
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 difficultyIndex = (difficultyIndex + 1) % 6;
                 UpdateDifficultySelection();
+                PlayScrollSound();
             }
 
             if (Input.GetKeyDown(KeyCode.Return))
             {
+                PlaySelectSound();
                 ConfirmDifficultySelection();
             }
 
@@ -100,16 +124,19 @@ public class MainMenuController : MonoBehaviour
             {
                 modeIndex = (modeIndex - 1 + 3) % 3;
                 UpdateModeSelection();
+                PlayScrollSound();
             }
 
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 modeIndex = (modeIndex + 1) % 3;
                 UpdateModeSelection();
+                PlayScrollSound();
             }
 
             if (Input.GetKeyDown(KeyCode.Return))
             {
+                PlaySelectSound();
                 ConfirmPlayerMode();
             }
 
@@ -121,6 +148,7 @@ public class MainMenuController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
             {
+                PlaySelectSound();
                 CloseControlsPage();
             }
             return;
@@ -131,17 +159,61 @@ public class MainMenuController : MonoBehaviour
         {
             selectedIndex = (selectedIndex - 1 + menuLength) % menuLength;
             UpdateSelection();
+            PlayScrollSound();
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             selectedIndex = (selectedIndex + 1) % menuLength;
             UpdateSelection();
+            PlayScrollSound();
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            PlaySelectSound();
             SelectOption();
+        }
+    }
+
+    // **Audio Methods**
+    void PlayScrollSound()
+    {
+        if (menuScrollSound != null && audioSource != null)
+        {
+            audioSource.volume = scrollSoundVolume;
+            audioSource.clip = menuScrollSound;
+            audioSource.Play();
+        }
+    }
+
+    void PlaySelectSound()
+    {
+        if (menuSelectSound != null && audioSource != null)
+        {
+            audioSource.volume = selectSoundVolume;
+            audioSource.clip = menuSelectSound;
+
+            // Boost the volume by playing multiple audio sources simultaneously
+            audioSource.Play();
+
+            // Create a temporary additional audio source for a louder effect
+            if (selectSoundVolume > 0.5f) // Only create the booster if volume is set high enough
+            {
+                // Create GameObject with a second audio source for doubled volume
+                GameObject audioBooster = new GameObject("SelectSoundBooster");
+                audioBooster.transform.position = transform.position;
+                AudioSource boosterSource = audioBooster.AddComponent<AudioSource>();
+
+                // Copy settings from main audio source
+                boosterSource.clip = menuSelectSound;
+                boosterSource.volume = selectSoundVolume * 0.8f; // Slightly lower to avoid distortion
+                boosterSource.pitch = audioSource.pitch;
+                boosterSource.Play();
+
+                // Destroy the temporary audio source after the sound finishes playing
+                Destroy(audioBooster, menuSelectSound.length + 0.1f);
+            }
         }
     }
 
@@ -295,6 +367,8 @@ public class MainMenuController : MonoBehaviour
         );
     }
 }
+
+
 
 
 

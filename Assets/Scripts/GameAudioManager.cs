@@ -4,7 +4,8 @@ using System.Collections;
 
 public class LevelMusic : MonoBehaviour
 {
-    private AudioSource audioSource;
+    [HideInInspector] // We'll access this from CountdownController
+    public AudioSource audioSource;
     [Header("Level Music Settings")]
     public AudioClip levelMusic; // Assign this in Inspector
     [Range(0f, 2f)]
@@ -21,6 +22,9 @@ public class LevelMusic : MonoBehaviour
 
     // Coroutine reference to manage fading
     private Coroutine fadeCoroutine;
+
+    // Flag to check if CountdownController exists in the scene
+    private bool hasCountdownController = false;
 
     void Awake()
     {
@@ -64,7 +68,12 @@ public class LevelMusic : MonoBehaviour
         if (instance == this && levelMusic != null)
         {
             audioSource.clip = levelMusic;
-            if (SceneManager.GetActiveScene().name == levelSceneName)
+
+            // Check if a CountdownController exists in the scene
+            hasCountdownController = FindFirstObjectByType<CountdownController>() != null;
+
+            // Only auto-play if there's no countdown controller
+            if (SceneManager.GetActiveScene().name == levelSceneName && !hasCountdownController)
             {
                 PlayMusic();
             }
@@ -76,8 +85,15 @@ public class LevelMusic : MonoBehaviour
     {
         if (scene.name == levelSceneName)
         {
-            // We're in this level, play the music
-            PlayMusic();
+            // Check if a CountdownController exists in the newly loaded scene
+            hasCountdownController = FindFirstObjectByType<CountdownController>() != null;
+
+            // Only auto-play if there's no countdown controller
+            // If there is a countdown, it will call PlayMusic() when ready
+            if (!hasCountdownController)
+            {
+                PlayMusic();
+            }
         }
         else
         {
@@ -86,7 +102,7 @@ public class LevelMusic : MonoBehaviour
         }
     }
 
-    private void PlayMusic()
+    public void PlayMusic()
     {
         if (audioSource != null && levelMusic != null)
         {
@@ -109,7 +125,7 @@ public class LevelMusic : MonoBehaviour
         }
     }
 
-    private void StopMusic()
+    public void StopMusic()
     {
         // Stop any ongoing fade
         if (fadeCoroutine != null)
@@ -153,6 +169,7 @@ public class LevelMusic : MonoBehaviour
         }
     }
 }
+
 
 
 

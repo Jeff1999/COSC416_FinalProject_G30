@@ -156,6 +156,11 @@ MonoBehaviour:
   selectionArrowGM: {fileID: 1176557173}
   difficultySelectionPanel: {fileID: 1626103963}
   selectionArrowDP: {fileID: 801419298}
+  menuScrollSound: {fileID: 8300000, guid: 83e5e4f2a1ea8524e8b284d2e906fa27, type: 3}
+  menuSelectSound: {fileID: 8300000, guid: 67d344f529b3df34c8482e030ccae8c8, type: 3}
+  scrollSoundVolume: 0.238
+  selectSoundVolume: 1.71
+  useVolumeBoost: 1
   beginnerScenePath: Assets/Scenes/BeginnerScene.unity
 --- !u!4 &8260232
 Transform:
@@ -792,7 +797,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuMusic: {fileID: 8300000, guid: c5ba9a7a3d71b674482f50ce9e7b3872, type: 3}
-  menuMusicVolume: 0.523
+  menuMusicVolume: 0.476
   mainMenuSceneName: MainMenuScene
 --- !u!1 &328931560
 GameObject:

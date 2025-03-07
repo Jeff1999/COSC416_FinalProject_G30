@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -10,9 +11,13 @@ public class GameController : MonoBehaviour
     public GameObject aiPlayer;
 
     [Header("UI References")]
-    public GameObject gameOverPanel;    // Optional - if you have a panel
-    public GameObject player1WinsText;  // Your existing Player1WinsText
-    public GameObject player2WinsText;  // Your existing Player2WinsText
+    public GameObject gameOverPanel;       // Your existing GameOverPanel
+    public TextMeshProUGUI player1WinsText; // Your existing Player1WinsText
+    public TextMeshProUGUI player2WinsText; // Your existing Player2WinsText
+
+    [Header("Score UI")]
+    public TextMeshProUGUI scoreTextPlayer1; // Your existing ScoreTextPlayer1
+    public TextMeshProUGUI scoreTextPlayer2; // Your existing ScoreTextPlayer2
 
     [Header("Scene Navigation")]
     public string mainMenuSceneName = "MainMenuScene"; // Name of your main menu scene
@@ -21,26 +26,69 @@ public class GameController : MonoBehaviour
     private AIController aiController;
     private bool gameOver = false;
 
+    // Score tracking
+    private int player1Score = 0;
+    private int player2Score = 0;
+    private const string PLAYER1_SCORE_KEY = "Player1Score";
+    private const string PLAYER2_SCORE_KEY = "Player2Score";
+
     void Start()
     {
         // Get components
         playerMovement = player.GetComponent<PlayerMovement>();
         aiController = aiPlayer.GetComponent<AIController>();
 
+        // Load scores from PlayerPrefs
+        LoadScores();
+
+        // Initialize score displays
+        UpdateScoreDisplays();
+
         // Make sure game over texts are hidden
         if (player1WinsText != null)
         {
-            player1WinsText.SetActive(false);
+            player1WinsText.gameObject.SetActive(false);
         }
         if (player2WinsText != null)
         {
-            player2WinsText.SetActive(false);
+            player2WinsText.gameObject.SetActive(false);
         }
 
-        // If you have a panel, hide it too
+        // Hide game over panel at start
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(false);
+        }
+    }
+
+    // Load scores from PlayerPrefs
+    void LoadScores()
+    {
+        player1Score = PlayerPrefs.GetInt(PLAYER1_SCORE_KEY, 0);
+        player2Score = PlayerPrefs.GetInt(PLAYER2_SCORE_KEY, 0);
+    }
+
+    // Save scores to PlayerPrefs
+    void SaveScores()
+    {
+        PlayerPrefs.SetInt(PLAYER1_SCORE_KEY, player1Score);
+        PlayerPrefs.SetInt(PLAYER2_SCORE_KEY, player2Score);
+        PlayerPrefs.Save();
+    }
+
+    // Update the score displays
+    void UpdateScoreDisplays()
+    {
+        if (scoreTextPlayer1 != null)
+        {
+            // Add more space between Player and Score with extra newlines
+            scoreTextPlayer1.text = "Player 1\n\n\nScore: " + player1Score;
+        }
+
+        if (scoreTextPlayer2 != null)
+        {
+            // Add more space between Player and Score with extra newlines
+            scoreTextPlayer2.text = "Player 2\n\n\nScore: " + player2Score;
         }
     }
 
@@ -49,6 +97,10 @@ public class GameController : MonoBehaviour
     {
         if (gameOver) return;
         gameOver = true;
+
+        // Increment AI player score
+        player2Score++;
+        SaveScores();
 
         // Stop AI movement too
         if (aiController != null)
@@ -60,14 +112,17 @@ public class GameController : MonoBehaviour
         // Show Player 2 Wins text
         if (player2WinsText != null)
         {
-            player2WinsText.SetActive(true);
+            player2WinsText.gameObject.SetActive(true);
         }
 
-        // Show game over panel if you have one
+        // Show game over panel
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
         }
+
+        // Update the score displays
+        UpdateScoreDisplays();
     }
 
     // Called when the AI crashes
@@ -75,6 +130,10 @@ public class GameController : MonoBehaviour
     {
         if (gameOver) return;
         gameOver = true;
+
+        // Increment player score
+        player1Score++;
+        SaveScores();
 
         // Stop player movement too
         if (playerMovement != null)
@@ -86,14 +145,17 @@ public class GameController : MonoBehaviour
         // Show Player 1 Wins text
         if (player1WinsText != null)
         {
-            player1WinsText.SetActive(true);
+            player1WinsText.gameObject.SetActive(true);
         }
 
-        // Show game over panel if you have one
+        // Show game over panel
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
         }
+
+        // Update the score displays
+        UpdateScoreDisplays();
     }
 
     void Update()
@@ -105,7 +167,6 @@ public class GameController : MonoBehaviour
             {
                 RestartGame();
             }
-
             // Detect 'T' key to return to difficulty selection
             if (Input.GetKeyDown(KeyCode.T))
             {
@@ -125,11 +186,24 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Returning to Difficulty Selection Panel...");
 
+        // Reset scores when returning to the main menu
+        ResetScores();
+
         // Set PlayerPrefs flag to indicate we want to open difficulty panel
         PlayerPrefs.SetInt("ShowDifficultyPanel", 1);
         PlayerPrefs.Save();
 
         // Load the main menu scene
         SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    // Reset scores to zero
+    void ResetScores()
+    {
+        player1Score = 0;
+        player2Score = 0;
+        PlayerPrefs.DeleteKey(PLAYER1_SCORE_KEY);
+        PlayerPrefs.DeleteKey(PLAYER2_SCORE_KEY);
+        PlayerPrefs.Save();
     }
 }
