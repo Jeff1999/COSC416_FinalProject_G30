@@ -1,27 +1,45 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement; // For scene reloading
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
-    private Vector2 moveDirection; // We'll set this in Start() based on rotation
+    private Vector2 moveDirection;
     private bool canTurn = true;
-    public bool isGameOver = false; // Made public for TrailGenerator
+    public bool isGameOver = false;
 
     // Reference to Game Over UI
     public GameObject gameOverText;
 
-    // Add crash and turn sound references
+    // Sound effects
     public AudioClip crashSound;
     public AudioClip turnSound;
+    public AudioClip jumpSound;
 
-    // Crash animation references
+    // Animation references
     public Sprite[] crashAnimationFrames;
+    public Sprite[] jumpAnimationFrames;
+    public float jumpAnimationSpeed = 0.05f;
 
+    // Jump settings
+    public float jumpDistance = 5f;
+    public float jumpCooldown = 1f;
+    private bool canJump = true;
+    private bool isJumping = false;
+
+    // Audio sources
     private AudioSource audioSource;
     private AudioSource turnAudioSource;
+    private AudioSource jumpAudioSource;
+
+    // Component references
     private GameController gameController;
+    private SpriteRenderer spriteRenderer;
+    private Sprite originalSprite;
+
+    // Reference to the TrailManager
+    private TrailManager trailManager;
 
     void Start()
     {
@@ -35,32 +53,61 @@ public class PlayerMovement : MonoBehaviour
             gameOverText.SetActive(false);
         }
 
-        // Set up crash sound audio source
+        // Set up audio sources
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
 
-        // Set up turn sound audio source
         turnAudioSource = gameObject.AddComponent<AudioSource>();
         turnAudioSource.playOnAwake = false;
+
+        jumpAudioSource = gameObject.AddComponent<AudioSource>();
+        jumpAudioSource.playOnAwake = false;
+
+        // Get references
         gameController = FindFirstObjectByType<GameController>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        trailManager = GetComponent<TrailManager>();
+
+        // Store the original sprite
+        if (spriteRenderer != null)
+        {
+            originalSprite = spriteRenderer.sprite;
+        }
     }
 
     void Update()
     {
         if (!isGameOver)
         {
-            // Regular movement
-            transform.position += new Vector3(moveDirection.x, moveDirection.y, 0) * speed * Time.deltaTime;
-            // Handle input for turning
-            if (canTurn)
+            if (!isJumping)
             {
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                // Regular movement when not jumping
+                transform.position += new Vector3(moveDirection.x, moveDirection.y, 0) * speed * Time.deltaTime;
+
+                // Handle input for turning
+                if (canTurn)
                 {
-                    TurnLeft();
+                    if (Input.GetKeyDown(KeyCode.A))
+                    {
+                        TurnLeft();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.D))
+                    {
+                        TurnRight();
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.RightArrow))
+            }
+
+            // Handle input for jumping
+            if (canJump && !isJumping)
+            {
+                if (Input.GetKeyDown(KeyCode.Q))
                 {
-                    TurnRight();
+                    JumpLeft();
+                }
+                else if (Input.GetKeyDown(KeyCode.E))
+                {
+                    JumpRight();
                 }
             }
         }
@@ -110,6 +157,114 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(TurnCooldown());
     }
 
+    void JumpLeft()
+    {
+        // Calculate the jump vector (perpendicular to current direction, to the left)
+        Vector2 jumpDirection = new Vector2(-moveDirection.y, moveDirection.x);
+        ExecuteJump(jumpDirection);
+    }
+
+    void JumpRight()
+    {
+        // Calculate the jump vector (perpendicular to current direction, to the right)
+        Vector2 jumpDirection = new Vector2(moveDirection.y, -moveDirection.x);
+        ExecuteJump(jumpDirection);
+    }
+
+    void ExecuteJump(Vector2 jumpDirection)
+    {
+        // Set jumping state
+        isJumping = true;
+        canJump = false;
+
+        // Play jump sound
+        if (jumpSound != null && jumpAudioSource != null)
+        {
+            jumpAudioSource.clip = jumpSound;
+            jumpAudioSource.Play();
+        }
+
+        // 1. Store current position
+        Vector3 startPosition = transform.position;
+
+        // 2. Handle the trail - this will save current trail and create new components
+        if (trailManager != null)
+        {
+            trailManager.ResetTrail();
+        }
+
+        // 3. Calculate end position
+        Vector3 endPosition = startPosition + new Vector3(jumpDirection.x, jumpDirection.y, 0) * jumpDistance;
+
+        // 4. Play jump animation if we have frames
+        if (jumpAnimationFrames != null && jumpAnimationFrames.Length > 0 && spriteRenderer != null)
+        {
+            StartCoroutine(PlayJumpAnimation());
+        }
+
+        // 5. IMMEDIATELY move to the new position
+        transform.position = endPosition;
+
+        // 6. Check for collisions at the landing position
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(endPosition, 0.2f);
+        bool hitSomething = false;
+
+        foreach (var collider in colliders)
+        {
+            // Ignore collisions with our own collider
+            if (collider.gameObject == gameObject)
+                continue;
+
+            // Check if we landed on something we shouldn't
+            if (collider.CompareTag("Wall") || collider.CompareTag("OpponentBorder") ||
+                collider.CompareTag("Trail") || (collider.CompareTag("Player") && collider.gameObject != gameObject))
+            {
+                // We hit something while landing
+                hitSomething = true;
+                GameOver();
+                return; // Exit early
+            }
+        }
+
+        // 7. If we landed safely, jump is complete
+        if (!hitSomething)
+        {
+            // Reset jumping state
+            isJumping = false;
+
+            // Start cooldown before allowing another jump
+            StartCoroutine(JumpCooldown());
+        }
+    }
+
+    IEnumerator PlayJumpAnimation()
+    {
+        // Save the original sprite
+        Sprite savedSprite = spriteRenderer.sprite;
+
+        // Play each frame of the jump animation
+        for (int i = 0; i < jumpAnimationFrames.Length; i++)
+        {
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sprite = jumpAnimationFrames[i];
+            }
+            yield return new WaitForSeconds(jumpAnimationSpeed);
+        }
+
+        // Restore original sprite
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = savedSprite;
+        }
+    }
+
+    IEnumerator JumpCooldown()
+    {
+        yield return new WaitForSeconds(jumpCooldown);
+        canJump = true;
+    }
+
     IEnumerator TurnCooldown()
     {
         canTurn = false;
@@ -119,11 +274,8 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log(
-          $"COLLISION:\n" +
-          $"  Player Name: {gameObject.name}, Position: {transform.position}\n" +
-          $"  Other Name: {other.gameObject.name}, Position: {other.transform.position}"
-        );
+        // Ignore collisions while jumping
+        if (isJumping) return;
 
         // Check for player-to-player collision (tie case)
         if (other.CompareTag("Player") && !isGameOver)
@@ -137,7 +289,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Normal crash conditions
-        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail")) && !isGameOver)
+        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder")
+             || other.CompareTag("Trail")) && !isGameOver)
         {
             GameOver();
         }
@@ -228,3 +381,4 @@ public class PlayerMovement : MonoBehaviour
         SceneManager.LoadScene(currentScene.name);
     }
 }
+

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4cc31f058dfc1f741a0f496ffe5ffcb2
+guid: 225b1a2fec6b9df43bd9f3fe129821ca
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4412749433835505075
-    second: JumpAnimation_0
+      213: 8364683527977638147
+    second: Teleport7_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: JumpAnimation_0
+      name: Teleport7_0
       rect:
         serializedVersion: 2
-        x: 139
-        y: 92
-        width: 43
-        height: 136
+        x: 0
+        y: 0
+        width: 28
+        height: 28
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d4abd6905c3c2c2c0800000000000000
-      internalID: -4412749433835505075
+      spriteID: 3091ba7c953551470800000000000000
+      internalID: 8364683527977638147
       vertices: []
       indices: 
       edges: []
