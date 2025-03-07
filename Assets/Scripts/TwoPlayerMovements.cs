@@ -1,44 +1,37 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
-public class PlayerMovement : MonoBehaviour
+public class TwoPlayerMovements : MonoBehaviour
 {
-    public float speed = 5f;
+    // -- SPEED / MOVEMENT --
+    public float speed = 20f;
     private Vector2 moveDirection;
     private bool canTurn = true;
     public bool isGameOver = false;
 
-    // Reference to Game Over UI
-    public GameObject gameOverText;
+    // -- JUMP SETTINGS --
+    public float jumpDistance = 5f;
+    public float jumpCooldown = 3f;
+    private bool canJump = true;
+    private bool isJumping = false;
+    public AudioClip jumpSound;
+    private AudioSource jumpAudioSource;
 
-    // Sound effects
+    // -- AUDIO & SPRITES --
+    public GameObject gameOverText;
     public AudioClip crashSound;
     public AudioClip turnSound;
-    public AudioClip jumpSound;
-
-    // Animation references
     public Sprite[] crashAnimationFrames;
     public Sprite[] jumpAnimationFrames;
     public float jumpAnimationSpeed = 0.05f;
 
-    // Jump settings
-    public float jumpDistance = 5f;
-    public float jumpCooldown = 1f;
-    private bool canJump = true;
-    private bool isJumping = false;
-
-    // Audio sources
     private AudioSource audioSource;
     private AudioSource turnAudioSource;
-    private AudioSource jumpAudioSource;
-
-    // Component references
-    private GameController gameController;
+    private TwoPlayerGameController gameController;
     private SpriteRenderer spriteRenderer;
     private Sprite originalSprite;
 
-    // Reference to the TrailManager
+    // -- TRAIL MANAGER --
     private TrailManager trailManager;
 
     void Start()
@@ -47,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
         float angle = transform.eulerAngles.z * Mathf.Deg2Rad;
         moveDirection = new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle));
 
-        // Make sure Game Over UI is hidden at start
+        // Hide Game Over UI if assigned
         if (gameOverText != null)
         {
             gameOverText.SetActive(false);
@@ -64,15 +57,22 @@ public class PlayerMovement : MonoBehaviour
         jumpAudioSource.playOnAwake = false;
         jumpAudioSource.volume = 0.4f;
 
-        // Get references
-        gameController = FindFirstObjectByType<GameController>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        trailManager = GetComponent<TrailManager>();
+        // Find TwoPlayerGameController
+        gameController = FindFirstObjectByType<TwoPlayerGameController>();
 
-        // Store the original sprite
+        // Get the sprite renderer for jump animation
+        spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
             originalSprite = spriteRenderer.sprite;
+        }
+
+        // Get or add the TrailManager
+        trailManager = GetComponent<TrailManager>();
+        if (trailManager == null)
+        {
+            trailManager = gameObject.AddComponent<TrailManager>();
+            Debug.Log("TrailManager added to Player 2");
         }
     }
 
@@ -88,11 +88,11 @@ public class PlayerMovement : MonoBehaviour
                 // Handle input for turning
                 if (canTurn)
                 {
-                    if (Input.GetKeyDown(KeyCode.A))
+                    if (Input.GetKeyDown(KeyCode.J))
                     {
                         TurnLeft();
                     }
-                    else if (Input.GetKeyDown(KeyCode.D))
+                    else if (Input.GetKeyDown(KeyCode.L))
                     {
                         TurnRight();
                     }
@@ -102,22 +102,14 @@ public class PlayerMovement : MonoBehaviour
             // Handle input for jumping
             if (canJump && !isJumping)
             {
-                if (Input.GetKeyDown(KeyCode.Q))
+                if (Input.GetKeyDown(KeyCode.U))
                 {
                     JumpLeft();
                 }
-                else if (Input.GetKeyDown(KeyCode.E))
+                else if (Input.GetKeyDown(KeyCode.O))
                 {
                     JumpRight();
                 }
-            }
-        }
-        else
-        {
-            // Check for R key press to restart when game is over
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                RestartGame();
             }
         }
     }
@@ -133,9 +125,11 @@ public class PlayerMovement : MonoBehaviour
 
         // Rotate the sprite
         transform.Rotate(0, 0, 90);
+
         // Update movement direction
         Vector2 newDir = new Vector2(-moveDirection.y, moveDirection.x);
         moveDirection = newDir;
+
         // Prevent multiple turns in the same frame
         StartCoroutine(TurnCooldown());
     }
@@ -151,9 +145,11 @@ public class PlayerMovement : MonoBehaviour
 
         // Rotate the sprite
         transform.Rotate(0, 0, -90);
+
         // Update movement direction
         Vector2 newDir = new Vector2(moveDirection.y, -moveDirection.x);
         moveDirection = newDir;
+
         // Prevent multiple turns in the same frame
         StartCoroutine(TurnCooldown());
     }
@@ -204,10 +200,14 @@ public class PlayerMovement : MonoBehaviour
             }
             transform.position = endPosition;
             CheckLandingCollisions(endPosition);
+
+            // Directly finish the jump if no animation
+            isJumping = false;
+            StartCoroutine(JumpCooldown());
         }
     }
 
-    // New coroutine that handles animation and teleport timing
+    // New coroutine that handles animation and teleport timing - EXACTLY like Player1
     IEnumerator PlayJumpAnimationWithTeleport(Vector3 startPos, Vector3 endPos)
     {
         // Save the original sprite
@@ -254,9 +254,7 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(JumpCooldown());
     }
 
-    // Replace only the CheckLandingCollisions method in your PlayerMovement.cs file
-    // Keep all other code the same
-
+    // Separated collision check function that returns a bool - EXACTLY like Player1
     bool CheckLandingCollisions(Vector3 landingPosition)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(landingPosition, 0.2f);
@@ -268,45 +266,42 @@ public class PlayerMovement : MonoBehaviour
                 continue;
 
             // Check if we landed on something we shouldn't
-            if (collider.CompareTag("Wall") || collider.CompareTag("OpponentBorder") ||
-                collider.CompareTag("Trail") || (collider.CompareTag("Player") && collider.gameObject != gameObject))
+            if (collider.CompareTag("Wall") || collider.CompareTag("Trail") ||
+                (collider.CompareTag("Player") && collider.gameObject != gameObject))
             {
-                // We hit something while landing
-                Debug.Log("Player 1 teleport collision detected with: " + collider.tag);
+                Debug.Log("Player 2 teleport collision detected with: " + collider.tag);
 
-                // Check if we're in a TwoPlayerGameController scene
-                TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
+                // Set game over flag immediately to stop movement
+                isGameOver = true;
+                speed = 0;
 
-                if (twoPlayerController != null)
+                // Play crash sound
+                if (crashSound != null && audioSource != null)
                 {
-                    // We are in 2P mode - use the TwoPlayerGameController
-                    isGameOver = true;
-                    speed = 0;
+                    audioSource.clip = crashSound;
+                    audioSource.Play();
+                }
 
-                    if (crashSound != null && audioSource != null)
+                // Trigger crash animation
+                if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+                {
+                    CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+                    if (crashAnimation != null)
                     {
-                        audioSource.clip = crashSound;
-                        audioSource.Play();
+                        crashAnimation.StartCrashAnimation(transform.position);
                     }
+                }
 
-                    // Trigger animation if available
-                    if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
-                    {
-                        CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
-                        if (crashAnimation != null)
-                        {
-                            crashAnimation.StartCrashAnimation(transform.position);
-                        }
-                    }
-
-                    // Call the game controller to handle the crash
-                    twoPlayerController.PlayerCrashed();
+                // Notify GameController that player 2 crashed
+                if (gameController != null)
+                {
+                    gameController.AIPlayerCrashed();
                 }
                 else
                 {
-                    // Normal single player game over
-                    GameOver();
+                    Debug.LogError("No TwoPlayerGameController found!");
                 }
+
                 return true;
             }
         }
@@ -329,77 +324,21 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Check if we're in a TwoPlayerGameController scene
-        TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
-
         // Ignore collisions while jumping
         if (isJumping) return;
 
         // Check for player-to-player collision (tie case)
         if (other.CompareTag("Player") && other.gameObject != gameObject && !isGameOver)
         {
-            if (twoPlayerController != null)
-            {
-                // If we're in a 2-player scene, use the TwoPlayerGameController
-                isGameOver = true;
-                speed = 0;
-
-                if (crashSound != null && audioSource != null)
-                {
-                    audioSource.clip = crashSound;
-                    audioSource.Play();
-                }
-
-                // Trigger animation if available
-                if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
-                {
-                    CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
-                    if (crashAnimation != null)
-                    {
-                        crashAnimation.StartCrashAnimation(transform.position);
-                    }
-                }
-
-                twoPlayerController.TieGame();
-                return;
-            }
-
-            // For singleplayer, fall back to HandleTie()
+            Debug.Log("Player 2 collided with Player 1 - Tie");
             HandleTie();
             return;
         }
 
         // Normal crash conditions
-        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail")) && !isGameOver)
+        if ((other.CompareTag("Wall") || other.CompareTag("Trail")) && !isGameOver)
         {
-            // Check if we're in a 2-player scene
-            if (twoPlayerController != null)
-            {
-                // If we're in a 2-player scene, use the TwoPlayerGameController
-                isGameOver = true;
-                speed = 0;
-
-                if (crashSound != null && audioSource != null)
-                {
-                    audioSource.clip = crashSound;
-                    audioSource.Play();
-                }
-
-                // Trigger animation if available
-                if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
-                {
-                    CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
-                    if (crashAnimation != null)
-                    {
-                        crashAnimation.StartCrashAnimation(transform.position);
-                    }
-                }
-
-                twoPlayerController.PlayerCrashed();
-                return;
-            }
-
-            // For singleplayer, fall back to GameOver()
+            Debug.Log("Player 2 crashed into wall or trail");
             GameOver();
         }
     }
@@ -423,23 +362,23 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Stop the player
-        speed = 0;
+        // Set local game over flag immediately to stop movement
         isGameOver = true;
+        speed = 0;
 
-        // Notify GameController that it's a tie
+        // Notify GameController about the tie
         if (gameController != null)
         {
             gameController.TieGame();
         }
         else
         {
-            // Fallback if no GameController
+            // Fallback if no game controller
             if (gameOverText != null)
             {
                 gameOverText.SetActive(true);
             }
-            Debug.Log("Tie Game! Press R to restart.");
+            Debug.LogError("No TwoPlayerGameController found!");
         }
     }
 
@@ -462,31 +401,30 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Stop the player
-        speed = 0;
+        // Set local game over flag immediately to stop movement
         isGameOver = true;
+        speed = 0;
 
-        // Notify GameController that player crashed
+        // Notify GameController that player 2 crashed
         if (gameController != null)
         {
-            gameController.PlayerCrashed();
+            Debug.Log("Player 2 notifying game controller about crash");
+            gameController.AIPlayerCrashed();
         }
         else
         {
-            // Fallback if no GameController
+            // Fallback if no game controller
             if (gameOverText != null)
             {
                 gameOverText.SetActive(true);
             }
-            Debug.Log("Game Over! Press R to restart.");
+            Debug.LogError("No TwoPlayerGameController found!");
         }
     }
-
-    void RestartGame()
-    {
-        // Reload the current scene
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.name);
-    }
 }
+
+
+
+
+
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -22,19 +22,19 @@ public class MainMenuController : MonoBehaviour
 
     // **Audio Elements**
     [Header("Audio Settings")]
-    public AudioClip menuScrollSound;  // Assign MenuScrollSound.wav in the Inspector
-    public AudioClip menuSelectSound;  // Assign MenuSelectSound.wav in the Inspector
+    public AudioClip menuScrollSound;  // Assign in the Inspector
+    public AudioClip menuSelectSound;  // Assign in the Inspector
     [Range(0f, 1f)]
-    public float scrollSoundVolume = 0.4f;  // Lower volume for scroll sound
-    [Range(0f, 2f)]                         // Allow up to 200% volume
-    public float selectSoundVolume = 1.2f;  // Boosted volume for select sound (120%)
+    public float scrollSoundVolume = 0.4f;
+    [Range(0f, 2f)]
+    public float selectSoundVolume = 1.2f;
     private AudioSource audioSource;
-    [Tooltip("Enable this to amplify the select sound beyond Unity's normal volume limits")]
     public bool useVolumeBoost = true;
 
     // **Scene Paths**
     [Header("Scene Paths")]
-    public string beginnerScenePath = "Assets/Scenes/BeginnerScene.unity"; // Set this in the Inspector if needed
+    public string beginnerScenePath = "Assets/Scenes/BeginnerScene.unity";
+    public string twoPlayerScenePath = "Assets/Scenes/2PScene.unity";
 
     // **Selection Tracking Variables**
     private float startY;
@@ -46,26 +46,27 @@ public class MainMenuController : MonoBehaviour
     private bool isSelectingMode = false;
     private bool isSelectingDifficulty = false;
 
-    private int modeIndex = 0; // Game Mode Selection (1P, 2P, Return)
+    private int modeIndex = 0;
     private float gameModeStartY;
     private float gameModeStepSize = 136f;
 
-    private int difficultyIndex = 0; // Difficulty Selection (Beginner, Easy, Medium, Hard, Expert, Return)
+    private int difficultyIndex = 0;
     private float difficultyStartY;
     private float difficultyStepSize = 136f;
 
     void Start()
     {
+        // Record starting positions for your selection arrows
         startY = selectionArrow.transform.position.y;
         gameModeStartY = selectionArrowGM.transform.position.y;
         difficultyStartY = selectionArrowDP.transform.position.y;
 
-        // **Hide all non-main menu panels at start**
+        // Hide sub‐panels at the very start
         controlsPanel.SetActive(false);
         gameModePanel.SetActive(false);
         difficultySelectionPanel.SetActive(false);
 
-        // Initialize audio source
+        // Initialize AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -74,18 +75,32 @@ public class MainMenuController : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.loop = false;
 
-        // Check if we should go directly to difficulty selection panel
-        if (PlayerPrefs.GetInt("ShowDifficultyPanel", 0) == 1)
+        // ---------------------------------------------------------
+        // MAIN POINT:
+        // Check if we should skip straight to Game Mode or Difficulty.
+        // ---------------------------------------------------------
+        if (PlayerPrefs.GetInt("ShowGameModePanel", 0) == 1)
         {
-            // Clear the flag
-            PlayerPrefs.DeleteKey("ShowDifficultyPanel");
+            // Clear that flag so it doesn't repeat
+            PlayerPrefs.SetInt("ShowGameModePanel", 0);
             PlayerPrefs.Save();
 
-            // Open game mode selection first
-            OpenPlayerModeSelection();
+            // Show the "Game Mode" panel
+            OpenGameModePanel();
+        }
+        else if (PlayerPrefs.GetInt("ShowDifficultyPanel", 0) == 1)
+        {
+            // Clear that flag so it doesn't repeat
+            PlayerPrefs.SetInt("ShowDifficultyPanel", 0);
+            PlayerPrefs.Save();
 
-            // Then open difficulty selection
-            OpenDifficultySelection();
+            // Show the "Difficulty" panel
+            OpenDifficultyPanel();
+        }
+        else
+        {
+            // Otherwise, show the normal main menu
+            OpenMainMenu();
         }
     }
 
@@ -146,6 +161,7 @@ public class MainMenuController : MonoBehaviour
         // **Controls Page Logic**
         if (isOnControlsPage)
         {
+            // Return/Escape to go back
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape))
             {
                 PlaySelectSound();
@@ -154,7 +170,7 @@ public class MainMenuController : MonoBehaviour
             return;
         }
 
-        // **Main Menu Navigation**
+        // **Main Menu Navigation** (when not in sub-menus)
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             selectedIndex = (selectedIndex - 1 + menuLength) % menuLength;
@@ -176,7 +192,9 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // **Audio Methods**
+    // ----------------------------------------------------------------------
+    //                          AUDIO HELPERS
+    // ----------------------------------------------------------------------
     void PlayScrollSound()
     {
         if (menuScrollSound != null && audioSource != null)
@@ -193,37 +211,34 @@ public class MainMenuController : MonoBehaviour
         {
             audioSource.volume = selectSoundVolume;
             audioSource.clip = menuSelectSound;
-
-            // Boost the volume by playing multiple audio sources simultaneously
             audioSource.Play();
 
-            // Create a temporary additional audio source for a louder effect
-            if (selectSoundVolume > 0.5f) // Only create the booster if volume is set high enough
+            // Optional "booster" trick
+            if (selectSoundVolume > 0.5f)
             {
-                // Create GameObject with a second audio source for doubled volume
                 GameObject audioBooster = new GameObject("SelectSoundBooster");
                 audioBooster.transform.position = transform.position;
                 AudioSource boosterSource = audioBooster.AddComponent<AudioSource>();
-
-                // Copy settings from main audio source
                 boosterSource.clip = menuSelectSound;
-                boosterSource.volume = selectSoundVolume * 0.8f; // Slightly lower to avoid distortion
+                boosterSource.volume = selectSoundVolume * 0.8f;
                 boosterSource.pitch = audioSource.pitch;
                 boosterSource.Play();
-
-                // Destroy the temporary audio source after the sound finishes playing
                 Destroy(audioBooster, menuSelectSound.length + 0.1f);
             }
         }
     }
 
-    // **Main Menu Methods**
+    // ----------------------------------------------------------------------
+    //                   MAIN MENU / CONTROLS  METHODS
+    // ----------------------------------------------------------------------
     void UpdateSelection()
     {
+        // Move the arrow in main menu
         selectionArrow.transform.position = new Vector3(
             selectionArrow.transform.position.x,
             startY - (selectedIndex * stepSize),
-            selectionArrow.transform.position.z);
+            selectionArrow.transform.position.z
+        );
     }
 
     void SelectOption()
@@ -232,7 +247,7 @@ public class MainMenuController : MonoBehaviour
         {
             case 0:
                 Debug.Log("Opening Game Mode Selection...");
-                OpenPlayerModeSelection();
+                OpenGameModePanel();
                 break;
             case 1:
                 Debug.Log("Opening Controls...");
@@ -243,6 +258,25 @@ public class MainMenuController : MonoBehaviour
                 QuitGame();
                 break;
         }
+    }
+
+    public void OpenMainMenu()
+    {
+        // Turn ON main menu panel
+        mainMenuPanel.SetActive(true);
+        // Turn OFF sub‐panels
+        controlsPanel.SetActive(false);
+        gameModePanel.SetActive(false);
+        difficultySelectionPanel.SetActive(false);
+
+        // Reset states
+        isSelectingMode = false;
+        isSelectingDifficulty = false;
+        isOnControlsPage = false;
+
+        // Reset arrow selection index if desired
+        selectedIndex = 0;
+        UpdateSelection();
     }
 
     void OpenControlsPage()
@@ -268,12 +302,19 @@ public class MainMenuController : MonoBehaviour
 #endif
     }
 
-    // **Game Mode Selection Methods**
-    void OpenPlayerModeSelection()
+    // ----------------------------------------------------------------------
+    //                  GAME MODE SELECTION METHODS
+    // ----------------------------------------------------------------------
+    void OpenGameModePanel()
     {
+        // Switch into "Game Mode" selection UI
         isSelectingMode = true;
         mainMenuPanel.SetActive(false);
         gameModePanel.SetActive(true);
+
+        // Reset the mode index if you want
+        modeIndex = 0;
+        UpdateModeSelection();
     }
 
     void ClosePlayerModeSelection()
@@ -281,25 +322,6 @@ public class MainMenuController : MonoBehaviour
         isSelectingMode = false;
         gameModePanel.SetActive(false);
         mainMenuPanel.SetActive(true);
-    }
-
-    void ConfirmPlayerMode()
-    {
-        if (modeIndex == 0)
-        {
-            Debug.Log("1 Player Mode Selected. Moving to Difficulty Selection...");
-            OpenDifficultySelection();
-        }
-        else if (modeIndex == 1)
-        {
-            Debug.Log("2 Player Mode Selected. Placeholder for 2P match...");
-            // **Placeholder for actual 2P scene loading later**
-        }
-        else if (modeIndex == 2)
-        {
-            Debug.Log("Returning to Main Menu...");
-            ClosePlayerModeSelection();
-        }
     }
 
     void UpdateModeSelection()
@@ -311,19 +333,62 @@ public class MainMenuController : MonoBehaviour
         );
     }
 
-    // **Difficulty Selection Methods**
-    void OpenDifficultySelection()
+    void ConfirmPlayerMode()
     {
+        if (modeIndex == 0)
+        {
+            Debug.Log("1 Player Mode Selected => Opening Difficulty Panel");
+            OpenDifficultyPanel();
+        }
+        else if (modeIndex == 1)
+        {
+            Debug.Log("2 Player Mode Selected => Load Two‐Player Scene");
+            LoadTwoPlayerScene();
+        }
+        else if (modeIndex == 2)
+        {
+            Debug.Log("Returning to Main Menu...");
+            ClosePlayerModeSelection();
+        }
+    }
+
+    void LoadTwoPlayerScene()
+    {
+        try
+        {
+            // If "2PScene" is in Build Settings by name
+            SceneManager.LoadScene("2PScene");
+        }
+        catch (System.Exception)
+        {
+            // Otherwise try loading by path
+            Debug.LogWarning("Failed to load scene by name. Trying by path...");
+            SceneManager.LoadSceneAsync(twoPlayerScenePath);
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    //                 DIFFICULTY SELECTION METHODS
+    // ----------------------------------------------------------------------
+    void OpenDifficultyPanel()
+    {
+        // Switch into "Difficulty" selection UI
         isSelectingDifficulty = true;
         gameModePanel.SetActive(false);
         difficultySelectionPanel.SetActive(true);
+
+        // Reset difficulty index if you want
+        difficultyIndex = 0;
+        UpdateDifficultySelection();
     }
 
     void CloseDifficultySelection()
     {
         isSelectingDifficulty = false;
         difficultySelectionPanel.SetActive(false);
+        // Usually we go back to the Game Mode panel
         gameModePanel.SetActive(true);
+        isSelectingMode = true;
     }
 
     void ConfirmDifficultySelection()
@@ -331,28 +396,27 @@ public class MainMenuController : MonoBehaviour
         switch (difficultyIndex)
         {
             case 0:
-                Debug.Log("Beginner Mode Selected. Loading BeginnerScene...");
-                // Load the beginner scene by path
+                Debug.Log("Beginner Mode => Load BeginnerScene");
                 SceneManager.LoadSceneAsync(beginnerScenePath);
                 break;
             case 1:
-                Debug.Log("Easy Mode Selected. Placeholder for game start...");
-                // TODO: Load Easy difficulty scene when ready
+                Debug.Log("Easy Mode (TODO: implement)...");
+                // ...
                 break;
             case 2:
-                Debug.Log("Medium Mode Selected. Placeholder for game start...");
-                // TODO: Load Medium difficulty scene when ready
+                Debug.Log("Medium Mode (TODO: implement)...");
+                // ...
                 break;
             case 3:
-                Debug.Log("Hard Mode Selected. Placeholder for game start...");
-                // TODO: Load Hard difficulty scene when ready
+                Debug.Log("Hard Mode (TODO: implement)...");
+                // ...
                 break;
             case 4:
-                Debug.Log("Expert Mode Selected. Placeholder for game start...");
-                // TODO: Load Expert difficulty scene when ready
+                Debug.Log("Expert Mode (TODO: implement)...");
+                // ...
                 break;
             case 5:
-                Debug.Log("Returning to Game Mode Selection...");
+                Debug.Log("Returning to Game Mode Panel");
                 CloseDifficultySelection();
                 break;
         }
