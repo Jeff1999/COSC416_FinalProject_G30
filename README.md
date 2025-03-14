@@ -1,7 +1,16 @@
 # GlitchCycle
 A modern reimagining of the classic Tron: Light Cycle (1982) arcade experience, enhanced with a lateral jump mechanic for thrilling, strategic duels.
- 
+
+---
 **Team Name:** Group 30 (G30)  
+
+## Team
+- **Team Name:** Group 30 (G30)  
+- **Team Members:**  
+  - Jeff Paller (21677646)  
+  - Mridul Nohria (74243379)  
+  - Raunak Khanna (89443253)  
+  - Muhammad Ahsan Kalam (86275237)  
 
 ---
 
@@ -17,7 +26,7 @@ In each round, players control light cycles that continuously leave glowing trai
 
 ## Game Modes
 ### Tutorial Mode
-A single-player experience where players compete against an **AI opponent** designed to teach the fundamentals of gameplay. The AI demonstrates basic strategies while providing a manageable challenge for beginner players to learn the controls and mechanics.
+A single-player experience where players compete against an **AI opponent** designed to teach the fundamentals of gameplay. The AI demonstrates basic strategies while providing a tutorial-like challenge for beginner players to learn the controls and mechanics.
 
 ### 2-Player Mode
 A competitive mode where two players face off on the same device using the control scheme detailed below. This mode allows friends to challenge each other in direct competition across multiple arenas.
@@ -32,8 +41,7 @@ Our game consists of **five handcrafted levels**, each set in a uniquely designe
 GlitchCycle employs a **persistent scoring system** that tracks the total number of rounds won by each player throughout the entire play session. Each time a player wins a round (by being the last cycle standing), their score increments. This running tally continues until players choose to exit the game, providing an ongoing competitive experience without predetermined match endpoints. The scoring display remains visible after every round, allowing players to track their performance history across multiple rounds.
 
 ---
-
-## Assets
+# Credits
 ### Models & Art
 - **Arena Grid/Background:**  
   [Grid HUD](https://opengameart.org/content/grid-hud) – OpenGameArt
@@ -75,44 +83,6 @@ We aim to create a retro-futuristic interface that complements the Tron-inspired
 - [Grayscale Icons](https://opengameart.org/content/grayscale-icons) – OpenGameArt
 - [Game Icons and Buttons](https://opengameart.org/content/game-icons-and-buttons) – OpenGameArt
 
-#### Main Menu
-- Minimalist panels and neon-styled buttons:
-  - **Play:** Launches the game and then prompts a level selection screen.
-  - **Settings:** Opens a settings menu for adjusting game options like sound, controls, etc.
-  - **Quit:** Exits the game.
-
-#### In-Game HUD
-- Displays round scores and ability cooldowns with a retro neon aesthetic.
-- Simple text overlays for scores and bright text to indicate jump cooldown timers.
-
----
-
-## Features
-- **Third Person Camera**  
-- **Move around with WASD**  
-- **Jump, Double Jump with Space**  
-- **Dash with Shift**  
-- **Collect Coins by moving over them**  
-- **Score Counter on the top right**  
-
-(*These features represent a template game design style; adapt as needed for your Tron-like gameplay.*)
-
----
-
-## Credits
-- **Coin Model:**  
-  From Quaternius (Sourced from [Poly Pizza](https://poly.pizza/))  
-
----
-
-## Team
-- **Team Name:** Group 30 (G30)  
-- **Team Members:**  
-  - Jeff Paller (21677646)  
-  - Mridul Nohria (74243379)  
-  - Raunak Khanna (89443253)  
-  - Muhammad Ahsan Kalam (86275237)  
-
 ---
 
 ## Cloning & Setting Up the Project
@@ -147,18 +117,6 @@ Below are detailed instructions for preparing your environment and opening the p
    - Once the project opens in Unity, you can select **File** > **Build Settings…**  
    - Choose your build platform (e.g., PC, Mac, Linux Standalone, WebGL, etc.).  
    - Click **Build** or **Build and Run** to export and test the game.
-
-5. **Additional Setup Notes**  
-   - Ensure you have the correct packages (e.g., Post Processing, Input System, etc.) that might be required.  
-   - If there are missing packages or errors, open **Window** > **Package Manager** in Unity to install any dependencies mentioned in the documentation or console logs.
-
-6. **Usage & Testing**  
-   - **Tutorial Mode:**  
-     - From the main menu, select **Tutorial** to play against the AI.  
-     - Follow on-screen instructions to learn movement, jumping, and scoring.  
-   - **2-Player Mode:**  
-     - Connect two input devices or use the keyboard controls for both players.  
-     - Score increments for each round winner. Keep track of your total wins until you exit.
 
 ---
 
