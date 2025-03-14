@@ -1,6 +1,9 @@
 # GlitchCycle
 A modern reimagining of the classic Tron: Light Cycle (1982) arcade experience, enhanced with a lateral jump mechanic for thrilling, strategic duels.
 
+Play now!
+[Click Here to play GlitchCycle!](https://jeffhouse.itch.io/glitchcyclev1)
+
 ---
 **Team Name:** Group 30 (G30)  
 
