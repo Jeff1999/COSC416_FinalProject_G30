@@ -13,7 +13,7 @@ The lateral jump system uses a sophisticated approach to temporarily bypass coll
 - Collision management to handle interactions between jumping cycles and existing trails
 
 ### Video Demonstration
-[Link to video showing the lateral jump system in action]
+[Link to video showing the lateral jump system in action](https://www.youtube.com/watch?v=jT1SGxZmfv8&ab_channel=JeffPaller)
 
 ### Relevant Commits
 - [Implemented Twist Feature Lateral Jump](https://github.com/Jeff1999/COSC416_FinalProject_G30/commit/6b713ce5689af7ad29d3088bcb28c9081199e338)
@@ -33,7 +33,7 @@ The 2-Player mode implementation required creating separate control systems and 
 - Camera management to ensure both players remain in view throughout gameplay
 
 ### Video Demonstration
-[Link to video showing the 2-Player mode in action]
+[Link to video showing the 2-Player mode in action](https://www.youtube.com/watch?v=pFpkHwEGdPY&ab_channel=JeffPaller)
 
 ### Relevant Commits
 - [Implemented 2P Mode](https://github.com/Jeff1999/COSC416_FinalProject_G30/commit/9da39ceeac133fe57ca332f7850676db3a44b739)
