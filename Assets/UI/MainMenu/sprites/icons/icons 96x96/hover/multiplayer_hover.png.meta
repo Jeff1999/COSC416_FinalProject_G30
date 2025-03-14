@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      multiplayer_hover_0: 1668326930990870911
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

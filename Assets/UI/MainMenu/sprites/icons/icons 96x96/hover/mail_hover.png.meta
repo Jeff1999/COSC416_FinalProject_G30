@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mail_hover_0: -1077825359779689751
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

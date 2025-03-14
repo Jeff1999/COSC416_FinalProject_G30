@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      radioactivity_locked_0: 8778749206045899183
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

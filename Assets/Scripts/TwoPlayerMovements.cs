@@ -11,7 +11,7 @@ public class TwoPlayerMovements : MonoBehaviour
 
     // -- JUMP SETTINGS --
     public float jumpDistance = 5f;
-    public float jumpCooldown = 3f;
+    public float jumpCooldown = 1f;
     private bool canJump = true;
     private bool isJumping = false;
     public AudioClip jumpSound;

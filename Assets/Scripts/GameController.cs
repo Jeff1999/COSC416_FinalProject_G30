@@ -240,10 +240,10 @@ public class GameController : MonoBehaviour
             {
                 RestartGame();
             }
-            // Detect 'T' key to return to difficulty selection
+            // Detect 'T' key to return to game mode selection
             if (Input.GetKeyDown(KeyCode.T))
             {
-                ReturnToDifficultySelection();
+                ReturnToGameModeSelection();
             }
         }
     }
@@ -255,15 +255,15 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene(currentScene.name);
     }
 
-    void ReturnToDifficultySelection()
+    void ReturnToGameModeSelection()
     {
-        Debug.Log("Returning to Difficulty Selection Panel...");
+        Debug.Log("Returning to Game Mode Selection Panel...");
 
         // Reset scores when returning to the main menu
         ResetScores();
 
-        // Set PlayerPrefs flag to indicate we want to open difficulty panel
-        PlayerPrefs.SetInt("ShowDifficultyPanel", 1);
+        // Set PlayerPrefs flag to indicate we want to open game mode panel
+        PlayerPrefs.SetInt("ShowGameModePanel", 1);
         PlayerPrefs.Save();
 
         // Load the main menu scene

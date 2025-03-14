@@ -8,6 +8,11 @@ public class MainMenuController : MonoBehaviour
     public TextMeshProUGUI selectionArrow;
     public GameObject mainMenuPanel;
 
+    // Parent objects for menu items
+    public GameObject startItem;
+    public GameObject controlsItem;
+    public GameObject exitItem;
+
     // **Controls Page Elements**
     public GameObject controlsPanel;
     public TextMeshProUGUI selectionArrowCP;
@@ -16,14 +21,15 @@ public class MainMenuController : MonoBehaviour
     public GameObject gameModePanel;
     public TextMeshProUGUI selectionArrowGM;
 
-    // **Difficulty Selection Elements**
-    public GameObject difficultySelectionPanel;
-    public TextMeshProUGUI selectionArrowDP;
+    // Parent objects for game mode items
+    public GameObject tutorialModeItem;
+    public GameObject twoPlayerModeItem;
+    public GameObject backToMenuItem;
 
     // **Audio Elements**
     [Header("Audio Settings")]
-    public AudioClip menuScrollSound;  // Assign in the Inspector
-    public AudioClip menuSelectSound;  // Assign in the Inspector
+    public AudioClip menuScrollSound;
+    public AudioClip menuSelectSound;
     [Range(0f, 1f)]
     public float scrollSoundVolume = 0.4f;
     [Range(0f, 2f)]
@@ -31,40 +37,30 @@ public class MainMenuController : MonoBehaviour
     private AudioSource audioSource;
     public bool useVolumeBoost = true;
 
+    // Fixed positions for arrows (modify these to match your UI)
+    [Header("Arrow Positioning")]
+    public float arrowOffsetX = -20f;  // How far from the menu item the arrow should be
+    public float arrowOffsetY = 0f;    // Vertical adjustment for the arrow position
+
     // **Scene Paths**
     [Header("Scene Paths")]
-    public string beginnerScenePath = "Assets/Scenes/BeginnerScene.unity";
+    public string tutorialScenePath = "Assets/Scenes/TutorialScene.unity";
     public string twoPlayerScenePath = "Assets/Scenes/2PScene.unity";
 
     // **Selection Tracking Variables**
-    private float startY;
-    private float stepSize = 136f;
     private int selectedIndex = 0;
     private int menuLength = 3;
 
     private bool isOnControlsPage = false;
     private bool isSelectingMode = false;
-    private bool isSelectingDifficulty = false;
 
     private int modeIndex = 0;
-    private float gameModeStartY;
-    private float gameModeStepSize = 136f;
-
-    private int difficultyIndex = 0;
-    private float difficultyStartY;
-    private float difficultyStepSize = 136f;
 
     void Start()
     {
-        // Record starting positions for your selection arrows
-        startY = selectionArrow.transform.position.y;
-        gameModeStartY = selectionArrowGM.transform.position.y;
-        difficultyStartY = selectionArrowDP.transform.position.y;
-
-        // Hide sub‐panels at the very start
+        // Hide sub-panels at the very start
         controlsPanel.SetActive(false);
         gameModePanel.SetActive(false);
-        difficultySelectionPanel.SetActive(false);
 
         // Initialize AudioSource
         audioSource = GetComponent<AudioSource>();
@@ -75,10 +71,7 @@ public class MainMenuController : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.loop = false;
 
-        // ---------------------------------------------------------
-        // MAIN POINT:
-        // Check if we should skip straight to Game Mode or Difficulty.
-        // ---------------------------------------------------------
+        // Check if we should skip straight to Game Mode
         if (PlayerPrefs.GetInt("ShowGameModePanel", 0) == 1)
         {
             // Clear that flag so it doesn't repeat
@@ -88,50 +81,18 @@ public class MainMenuController : MonoBehaviour
             // Show the "Game Mode" panel
             OpenGameModePanel();
         }
-        else if (PlayerPrefs.GetInt("ShowDifficultyPanel", 0) == 1)
-        {
-            // Clear that flag so it doesn't repeat
-            PlayerPrefs.SetInt("ShowDifficultyPanel", 0);
-            PlayerPrefs.Save();
-
-            // Show the "Difficulty" panel
-            OpenDifficultyPanel();
-        }
         else
         {
             // Otherwise, show the normal main menu
             OpenMainMenu();
         }
+
+        // Initialize the arrow position on startup
+        UpdateSelection();
     }
 
     void Update()
     {
-        // **Difficulty Selection Logic**
-        if (isSelectingDifficulty)
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                difficultyIndex = (difficultyIndex - 1 + 6) % 6;
-                UpdateDifficultySelection();
-                PlayScrollSound();
-            }
-
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                difficultyIndex = (difficultyIndex + 1) % 6;
-                UpdateDifficultySelection();
-                PlayScrollSound();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                PlaySelectSound();
-                ConfirmDifficultySelection();
-            }
-
-            return;
-        }
-
         // **Game Mode Selection Logic**
         if (isSelectingMode)
         {
@@ -233,11 +194,33 @@ public class MainMenuController : MonoBehaviour
     // ----------------------------------------------------------------------
     void UpdateSelection()
     {
-        // Move the arrow in main menu
-        selectionArrow.transform.position = new Vector3(
-            selectionArrow.transform.position.x,
-            startY - (selectedIndex * stepSize),
-            selectionArrow.transform.position.z
+        // Position the arrow next to the selected menu item using absolute positioning
+        // This is better for WebGL as it doesn't rely on dynamic calculations
+        RectTransform targetRectTransform;
+
+        switch (selectedIndex)
+        {
+            case 0: // Start Game
+                targetRectTransform = startItem.GetComponent<RectTransform>();
+                break;
+
+            case 1: // Controls
+                targetRectTransform = controlsItem.GetComponent<RectTransform>();
+                break;
+
+            case 2: // Exit Game
+                targetRectTransform = exitItem.GetComponent<RectTransform>();
+                break;
+
+            default:
+                targetRectTransform = startItem.GetComponent<RectTransform>();
+                break;
+        }
+
+        // Fixed position for the arrow - use absolute coordinates instead of relative positioning
+        selectionArrow.rectTransform.anchoredPosition = new Vector2(
+            arrowOffsetX,
+            targetRectTransform.anchoredPosition.y + arrowOffsetY
         );
     }
 
@@ -267,11 +250,9 @@ public class MainMenuController : MonoBehaviour
         // Turn OFF sub‐panels
         controlsPanel.SetActive(false);
         gameModePanel.SetActive(false);
-        difficultySelectionPanel.SetActive(false);
 
         // Reset states
         isSelectingMode = false;
-        isSelectingDifficulty = false;
         isOnControlsPage = false;
 
         // Reset arrow selection index if desired
@@ -296,9 +277,16 @@ public class MainMenuController : MonoBehaviour
     void QuitGame()
     {
         Debug.Log("Quitting Game...");
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    // For WebGL builds, try to close the browser tab directly
+    Application.ExternalEval("window.close();");
+#else
+        // For standalone builds, actually quit the application
         Application.Quit();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
+#endif
 #endif
     }
 
@@ -326,10 +314,32 @@ public class MainMenuController : MonoBehaviour
 
     void UpdateModeSelection()
     {
-        selectionArrowGM.transform.position = new Vector3(
-            selectionArrowGM.transform.position.x,
-            gameModeStartY - (modeIndex * gameModeStepSize),
-            selectionArrowGM.transform.position.z
+        // Position arrow using fixed positions rather than calculations
+        RectTransform targetRectTransform;
+
+        switch (modeIndex)
+        {
+            case 0: // Tutorial Mode
+                targetRectTransform = tutorialModeItem.GetComponent<RectTransform>();
+                break;
+
+            case 1: // 2 Player Mode
+                targetRectTransform = twoPlayerModeItem.GetComponent<RectTransform>();
+                break;
+
+            case 2: // Back
+                targetRectTransform = backToMenuItem.GetComponent<RectTransform>();
+                break;
+
+            default:
+                targetRectTransform = tutorialModeItem.GetComponent<RectTransform>();
+                break;
+        }
+
+        // Set fixed position for the game mode arrow
+        selectionArrowGM.rectTransform.anchoredPosition = new Vector2(
+            arrowOffsetX,
+            targetRectTransform.anchoredPosition.y + arrowOffsetY
         );
     }
 
@@ -337,8 +347,8 @@ public class MainMenuController : MonoBehaviour
     {
         if (modeIndex == 0)
         {
-            Debug.Log("1 Player Mode Selected => Opening Difficulty Panel");
-            OpenDifficultyPanel();
+            Debug.Log("Tutorial Mode Selected => Loading Tutorial Scene");
+            LoadTutorialScene();
         }
         else if (modeIndex == 1)
         {
@@ -349,6 +359,21 @@ public class MainMenuController : MonoBehaviour
         {
             Debug.Log("Returning to Main Menu...");
             ClosePlayerModeSelection();
+        }
+    }
+
+    void LoadTutorialScene()
+    {
+        try
+        {
+            // If "TutorialScene" is in Build Settings by name
+            SceneManager.LoadScene("TutorialScene");
+        }
+        catch (System.Exception)
+        {
+            // Otherwise try loading by path
+            Debug.LogWarning("Failed to load scene by name. Trying by path...");
+            SceneManager.LoadSceneAsync(tutorialScenePath);
         }
     }
 
@@ -366,72 +391,7 @@ public class MainMenuController : MonoBehaviour
             SceneManager.LoadSceneAsync(twoPlayerScenePath);
         }
     }
-
-    // ----------------------------------------------------------------------
-    //                 DIFFICULTY SELECTION METHODS
-    // ----------------------------------------------------------------------
-    void OpenDifficultyPanel()
-    {
-        // Switch into "Difficulty" selection UI
-        isSelectingDifficulty = true;
-        gameModePanel.SetActive(false);
-        difficultySelectionPanel.SetActive(true);
-
-        // Reset difficulty index if you want
-        difficultyIndex = 0;
-        UpdateDifficultySelection();
-    }
-
-    void CloseDifficultySelection()
-    {
-        isSelectingDifficulty = false;
-        difficultySelectionPanel.SetActive(false);
-        // Usually we go back to the Game Mode panel
-        gameModePanel.SetActive(true);
-        isSelectingMode = true;
-    }
-
-    void ConfirmDifficultySelection()
-    {
-        switch (difficultyIndex)
-        {
-            case 0:
-                Debug.Log("Beginner Mode => Load BeginnerScene");
-                SceneManager.LoadSceneAsync(beginnerScenePath);
-                break;
-            case 1:
-                Debug.Log("Easy Mode (TODO: implement)...");
-                // ...
-                break;
-            case 2:
-                Debug.Log("Medium Mode (TODO: implement)...");
-                // ...
-                break;
-            case 3:
-                Debug.Log("Hard Mode (TODO: implement)...");
-                // ...
-                break;
-            case 4:
-                Debug.Log("Expert Mode (TODO: implement)...");
-                // ...
-                break;
-            case 5:
-                Debug.Log("Returning to Game Mode Panel");
-                CloseDifficultySelection();
-                break;
-        }
-    }
-
-    void UpdateDifficultySelection()
-    {
-        selectionArrowDP.transform.position = new Vector3(
-            selectionArrowDP.transform.position.x,
-            difficultyStartY - (difficultyIndex * difficultyStepSize),
-            selectionArrowDP.transform.position.z
-        );
-    }
 }
-
 
 
 

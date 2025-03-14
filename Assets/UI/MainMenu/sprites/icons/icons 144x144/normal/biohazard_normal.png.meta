@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      biohazard_normal_0: 4948431954893464819
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

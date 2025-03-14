@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      biohazard_pressed_0: -1206118716900456086
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
