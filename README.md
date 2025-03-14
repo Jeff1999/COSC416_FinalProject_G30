@@ -44,31 +44,27 @@ GlitchCycle employs a **persistent scoring system** that tracks the total number
 # Credits
 ### Models & Art
 - **Arena Grid/Background:**  
-  [Grid HUD](https://opengameart.org/content/grid-hud) – OpenGameArt
+  [Grid HUD](https://opengameart.org/content/grid-hud) By Ivan Voirol - Sourced from OpenGameArt
 - **Player Bikes/Spaceship Building Kit:**  
-  [Spaceship Building Kit](https://opengameart.org/content/spaceship-building-kit) – OpenGameArt
-- **Walls/Obstacles:**  
-  Created using Unity’s shape tool for rectangles, circles, etc.
+  [Spaceship Building Kit](https://opengameart.org/content/spaceship-building-kit) By BizmasterStudios – Sourced from OpenGameArt
+- **Walls/Trails:**  
+  Created using Unity’s shape tool for rectangles, line renderer for trail generation, etc.
 - **Jump Animation:**  
-  [Warp Effect 2](https://opengameart.org/content/warp-effect-2) – OpenGameArt
+  [Warp Effect](https://opengameart.org/content/explosion-set-1-m484-games) By Master484 – Sourced from OpenGameArt
 - **Crash Explosion Animation:**  
-  [Bubble Explosion](https://opengameart.org/content/bubble-explosion) – OpenGameArt
+  [Bubble Explosion](https://opengameart.org/content/bubble-explosion) By Tiao Ferreira – Sourced from OpenGameArt
 
 ### Sound & Music
 - **Retro Jump Sound:**  
-  [RETRO JUMP SOUND](https://freesound.org/people/CJspellsfish/sounds/727650/) – FreeSound
+  [RETRO JUMP SOUND](https://freesound.org/people/CJspellsfish/sounds/727650/) By CJspellsfish – Sourced from FreeSound
 - **Crash Sound Effect:**  
-  [Crash Sound Effect](https://freesound.org/people/squareal/sounds/237375/) – FreeSound
+  [Crash Sound Effect](https://freesound.org/people/squareal/sounds/237375/) By squareal – Sourced from FreeSound
 - **Main Menu Music (Tron vibe):**  
-  [Music by Timbre](https://freesound.org/people/Timbre/sounds/561191/) – FreeSound
+  [Main Menu Music](https://www.youtube.com/watch?v=Net67QKNBEk&ab_channel=WhiteBatAudio) By WhiteBatAudio – Sourced from Youtube 
 - **Selection Sound Effect:**  
-  [Selection SFX by Bertrof](https://freesound.org/people/Bertrof/sounds/131658/) – FreeSound
+  [Selection SFX](https://freesound.org/people/Bertrof/sounds/131658/) By Bertrof – Sourced from FreeSound
 - **In-Game Music Options:**  
-  - [Music by furbyguy](https://freesound.org/people/furbyguy/sounds/331876/)  
-  - [Music by Timbre](https://freesound.org/people/Timbre/sounds/496186/)  
-  - [Music by 3ag1e](https://freesound.org/people/3ag1e/sounds/745852/)  
-  - [Music by zagi2](https://freesound.org/people/zagi2/sounds/223475/)  
-  - [Music by danlucaz](https://freesound.org/people/danlucaz/sounds/497109/)
+  [In-game Music](https://freesound.org/people/furbyguy/sounds/331876/)  By furbyguy - Sourced from Freesound
 
 ---
 
@@ -76,12 +72,7 @@ GlitchCycle employs a **persistent scoring system** that tracks the total number
 We aim to create a retro-futuristic interface that complements the Tron-inspired aesthetic.
 
 ### Fonts
-- [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) – Google Fonts  
-- [VT323](https://fonts.google.com/specimen/VT323) – Google Fonts
-
-### Icons and UI Elements
-- [Grayscale Icons](https://opengameart.org/content/grayscale-icons) – OpenGameArt
-- [Game Icons and Buttons](https://opengameart.org/content/game-icons-and-buttons) – OpenGameArt
+- [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) – Sourced from Google Fonts  
 
 ---
 
