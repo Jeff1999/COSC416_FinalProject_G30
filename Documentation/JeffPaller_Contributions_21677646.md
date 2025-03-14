@@ -22,7 +22,7 @@ The lateral jump system uses a sophisticated approach to temporarily bypass coll
 ## Feature 2: 2-Player Mode Implementation
 
 ### Description
-Developed the 2-Player mode that enables competitive gameplay on the same device. This mode allows two players to compete directly against each other across five different arenas, creating an engaging multiplayer experience that forms the centerpiece of the game.
+Developed the 2-Player mode that enables competitive gameplay on the same device. This mode allows two players to compete directly against each other, creating an engaging multiplayer experience that forms the centerpiece of the game.
 
 ### Technical Implementation
 The 2-Player mode implementation required creating separate control systems and game states for simultaneous gameplay:
