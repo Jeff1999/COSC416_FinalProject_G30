@@ -26,6 +26,21 @@ public class MainMenuController : MonoBehaviour
     public GameObject twoPlayerModeItem;
     public GameObject backToMenuItem;
 
+    // **Level Selection Elements**
+    public GameObject levelSelectPanel;
+    public TextMeshProUGUI selectionArrowLS;
+
+    // Parent objects for level selection items
+    public GameObject level1Item;
+    public GameObject level2Item;
+    public GameObject level3Item;
+    public GameObject backToGameModeItem;
+
+    // Level paths
+    public string level1ScenePath = "Assets/Scenes/Level1.unity";
+    public string level2ScenePath = "Assets/Scenes/Level2.unity";
+    public string level3ScenePath = "Assets/Scenes/Level3.unity";
+
     // **Audio Elements**
     [Header("Audio Settings")]
     public AudioClip menuScrollSound;
@@ -53,14 +68,17 @@ public class MainMenuController : MonoBehaviour
 
     private bool isOnControlsPage = false;
     private bool isSelectingMode = false;
+    private bool isSelectingLevel = false;
 
     private int modeIndex = 0;
+    private int levelIndex = 0;
 
     void Start()
     {
         // Hide sub-panels at the very start
         controlsPanel.SetActive(false);
         gameModePanel.SetActive(false);
+        levelSelectPanel.SetActive(false);
 
         // Initialize AudioSource
         audioSource = GetComponent<AudioSource>();
@@ -71,8 +89,18 @@ public class MainMenuController : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.loop = false;
 
+        // Check if we should skip straight to Controls Panel
+        if (PlayerPrefs.GetInt("ShowControlsPanel", 0) == 1)
+        {
+            // Clear that flag so it doesn't repeat
+            PlayerPrefs.SetInt("ShowControlsPanel", 0);
+            PlayerPrefs.Save();
+
+            // Show the Controls panel
+            OpenControlsPage();
+        }
         // Check if we should skip straight to Game Mode
-        if (PlayerPrefs.GetInt("ShowGameModePanel", 0) == 1)
+        else if (PlayerPrefs.GetInt("ShowGameModePanel", 0) == 1)
         {
             // Clear that flag so it doesn't repeat
             PlayerPrefs.SetInt("ShowGameModePanel", 0);
@@ -93,6 +121,68 @@ public class MainMenuController : MonoBehaviour
 
     void Update()
     {
+        // **Level Selection Logic**
+        if (isSelectingLevel)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                // Return → Level 1 → Level 2 → Level 3 → Return
+                if (levelIndex == 3)      // From Return
+                    levelIndex = 0;       // Go to Level 1
+                else if (levelIndex == 0) // From Level 1
+                    levelIndex = 1;       // Go to Level 2
+                else if (levelIndex == 1) // From Level 2
+                    levelIndex = 2;       // Go to Level 3
+                else if (levelIndex == 2) // From Level 3
+                    levelIndex = 3;       // Go to Return
+
+                UpdateLevelSelection();
+                PlayScrollSound();
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                // Return → Level 3 → Level 2 → Level 1 → Return
+                if (levelIndex == 3)      // From Return
+                    levelIndex = 2;       // Go to Level 3
+                else if (levelIndex == 2) // From Level 3
+                    levelIndex = 1;       // Go to Level 2
+                else if (levelIndex == 1) // From Level 2
+                    levelIndex = 0;       // Go to Level 1
+                else if (levelIndex == 0) // From Level 1
+                    levelIndex = 3;       // Go to Return
+
+                UpdateLevelSelection();
+                PlayScrollSound();
+            }
+
+            // For horizontal movement in the top row
+            if (levelIndex < 3)
+            {
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    levelIndex = (levelIndex - 1 + 3) % 3;
+                    UpdateLevelSelection();
+                    PlayScrollSound();
+                }
+
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    levelIndex = (levelIndex + 1) % 3;
+                    UpdateLevelSelection();
+                    PlayScrollSound();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                PlaySelectSound();
+                ConfirmLevelSelection();
+            }
+
+            return;
+        }
+
         // **Game Mode Selection Logic**
         if (isSelectingMode)
         {
@@ -250,10 +340,12 @@ public class MainMenuController : MonoBehaviour
         // Turn OFF sub‐panels
         controlsPanel.SetActive(false);
         gameModePanel.SetActive(false);
+        levelSelectPanel.SetActive(false);
 
         // Reset states
         isSelectingMode = false;
         isOnControlsPage = false;
+        isSelectingLevel = false;
 
         // Reset arrow selection index if desired
         selectedIndex = 0;
@@ -352,8 +444,8 @@ public class MainMenuController : MonoBehaviour
         }
         else if (modeIndex == 1)
         {
-            Debug.Log("2 Player Mode Selected => Load Two‐Player Scene");
-            LoadTwoPlayerScene();
+            Debug.Log("2 Player Mode Selected => Opening Level Selection");
+            OpenLevelSelectPanel();
         }
         else if (modeIndex == 2)
         {
@@ -389,6 +481,122 @@ public class MainMenuController : MonoBehaviour
             // Otherwise try loading by path
             Debug.LogWarning("Failed to load scene by name. Trying by path...");
             SceneManager.LoadSceneAsync(twoPlayerScenePath);
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    //                  LEVEL SELECTION METHODS
+    // ----------------------------------------------------------------------
+    void OpenLevelSelectPanel()
+    {
+        // Switch into "Level Selection" UI
+        isSelectingLevel = true;
+        isSelectingMode = false;
+        gameModePanel.SetActive(false);
+        levelSelectPanel.SetActive(true);
+
+        // Reset the level index to 3 (RETURN button)
+        levelIndex = 3;
+        UpdateLevelSelection();
+    }
+
+    void CloseLevelSelectPanel()
+    {
+        isSelectingLevel = false;
+        isSelectingMode = true;
+        levelSelectPanel.SetActive(false);
+        gameModePanel.SetActive(true);
+
+        // Reset game mode selection
+        UpdateModeSelection();
+    }
+
+    void UpdateLevelSelection()
+    {
+        switch (levelIndex)
+        {
+            case 0: // Level 1
+                // Position arrow next to Level 1
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, -230);
+                break;
+
+            case 1: // Level 2
+                // Position arrow next to Level 2
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(190, -230);
+                break;
+
+            case 2: // Level 3
+                // Position arrow next to Level 3
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(640, -230);
+                break;
+
+            case 3: // Return
+                // Keep the working return button position
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(200, -465);
+                break;
+
+            default:
+                // Default to Return position
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(0, 0);
+                break;
+        }
+    }
+
+    void ConfirmLevelSelection()
+    {
+        switch (levelIndex)
+        {
+            case 0:
+                Debug.Log("Level 1 Selected - Not implemented yet");
+                // When ready: LoadLevel(1);
+                break;
+            case 1:
+                Debug.Log("Level 2 Selected - Not implemented yet");
+                // When ready: LoadLevel(2);
+                break;
+            case 2:
+                Debug.Log("Level 3 Selected - Not implemented yet");
+                // When ready: LoadLevel(3);
+                break;
+            case 3:
+                Debug.Log("Returning to Game Mode Selection...");
+                CloseLevelSelectPanel();
+                break;
+        }
+    }
+
+    // Add these methods for when you're ready to implement the actual level loading
+    void LoadLevel(int levelNumber)
+    {
+        string scenePath = "";
+        string sceneName = "";
+
+        switch (levelNumber)
+        {
+            case 1:
+                scenePath = level1ScenePath;
+                sceneName = "Level1";
+                break;
+            case 2:
+                scenePath = level2ScenePath;
+                sceneName = "Level2";
+                break;
+            case 3:
+                scenePath = level3ScenePath;
+                sceneName = "Level3";
+                break;
+        }
+
+        try
+        {
+            // First try loading by name
+            SceneManager.LoadScene(sceneName);
+        }
+        catch (System.Exception)
+        {
+            // Otherwise try loading by path
+            Debug.LogWarning("Failed to load scene by name. Trying by path...");
+            SceneManager.LoadSceneAsync(scenePath);
         }
     }
 }

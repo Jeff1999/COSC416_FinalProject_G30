@@ -245,6 +245,11 @@ public class GameController : MonoBehaviour
             {
                 ReturnToGameModeSelection();
             }
+            // Detect 'C' key to go to controls panel
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                ShowControlsPanel();
+            }
         }
     }
 
@@ -264,6 +269,21 @@ public class GameController : MonoBehaviour
 
         // Set PlayerPrefs flag to indicate we want to open game mode panel
         PlayerPrefs.SetInt("ShowGameModePanel", 1);
+        PlayerPrefs.Save();
+
+        // Load the main menu scene
+        SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    void ShowControlsPanel()
+    {
+        Debug.Log("Showing Controls Panel...");
+
+        // Reset scores when going to controls panel - just like when returning to menu
+        ResetScores();
+
+        // Set a PlayerPref flag to tell MainMenu to open the controls panel
+        PlayerPrefs.SetInt("ShowControlsPanel", 1);
         PlayerPrefs.Save();
 
         // Load the main menu scene

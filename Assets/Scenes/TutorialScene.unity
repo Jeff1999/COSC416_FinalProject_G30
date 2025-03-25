@@ -541,13 +541,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Player 2 Wins!
-
-
-
-
-
-    Press "R" to Play Again or "T" to Exit. '
+  m_text: "Player 2 Wins!\n\n\n\n\n\n\n\nPress \"R\" to Play Again or \"T\" to Exit.
+    \n\n\nAdditionally, Press \"C\" to see the Controls Panel. "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
   m_sharedMaterial: {fileID: -2431143938904986706, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
@@ -574,8 +569,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -702,13 +697,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Player 1 Wins!
-
-
-
-
-
-    Press "R" to Play Again or "T" to Exit. '
+  m_text: "Player 1 Wins!\n\n\n\n\n\n\n\nPress \"R\" to Play Again or \"T\" to Exit.
+    \n\n\nAdditionally, Press \"C\" to see the Controls Panel. "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
   m_sharedMaterial: {fileID: -2431143938904986706, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
@@ -735,8 +725,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1754,13 +1744,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Tie Game!
-
-
-
-
-
-    Press "R" to Play Again or "T" to Exit. '
+  m_text: "Tie Game!\n\n\n\n\n\n\n\nPress \"R\" to Play Again or \"T\" to Exit.\n
+    \n\nAdditionally, Press \"C\" to see the Controls Panel. "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
   m_sharedMaterial: {fileID: -2431143938904986706, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
@@ -1787,8 +1772,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
