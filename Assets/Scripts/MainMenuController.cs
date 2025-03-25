@@ -570,10 +570,22 @@ public class MainMenuController : MonoBehaviour
                     SceneManager.LoadSceneAsync(level1ScenePath);
                 }
                 break;
+
             case 1:
-                Debug.Log("Level 2 Selected - Not implemented yet");
-                // When ready: LoadLevel(2);
+                Debug.Log("Level 2 Selected => Loading 2PSceneLevel2");
+                try
+                {
+                    // Load the 2PSceneLevel2 by name
+                    SceneManager.LoadScene("2PSceneLevel2");
+                }
+                catch (System.Exception)
+                {
+                    // Fallback to path loading if needed
+                    Debug.LogWarning("Failed to load scene by name. Trying by path...");
+                    SceneManager.LoadSceneAsync(level2ScenePath);
+                }
                 break;
+
             case 2:
                 Debug.Log("Level 3 Selected - Not implemented yet");
                 // When ready: LoadLevel(3);
