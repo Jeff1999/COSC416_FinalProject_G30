@@ -89,8 +89,18 @@ public class MainMenuController : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.loop = false;
 
+        // Check if we should skip straight to Level Select Panel
+        if (PlayerPrefs.GetInt("ShowLevelSelectPanel", 0) == 1)
+        {
+            // Clear that flag so it doesn't repeat
+            PlayerPrefs.SetInt("ShowLevelSelectPanel", 0);
+            PlayerPrefs.Save();
+
+            // Show the Level Select panel
+            OpenLevelSelectPanel();
+        }
         // Check if we should skip straight to Controls Panel
-        if (PlayerPrefs.GetInt("ShowControlsPanel", 0) == 1)
+        else if (PlayerPrefs.GetInt("ShowControlsPanel", 0) == 1)
         {
             // Clear that flag so it doesn't repeat
             PlayerPrefs.SetInt("ShowControlsPanel", 0);
@@ -547,8 +557,18 @@ public class MainMenuController : MonoBehaviour
         switch (levelIndex)
         {
             case 0:
-                Debug.Log("Level 1 Selected - Not implemented yet");
-                // When ready: LoadLevel(1);
+                Debug.Log("Level 1 Selected => Loading 2PSceneLevel1");
+                try
+                {
+                    // Load the 2PSceneLevel1 by name
+                    SceneManager.LoadScene("2PSceneLevel1");
+                }
+                catch (System.Exception)
+                {
+                    // Fallback to path loading if needed
+                    Debug.LogWarning("Failed to load scene by name. Trying by path...");
+                    SceneManager.LoadSceneAsync(level1ScenePath);
+                }
                 break;
             case 1:
                 Debug.Log("Level 2 Selected - Not implemented yet");

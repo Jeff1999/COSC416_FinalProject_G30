@@ -299,14 +299,13 @@ public class TwoPlayerGameController : MonoBehaviour
     // CHANGED: Instead of ReturnToDifficultySelection(), we use ReturnToGameModeSelection().
     void ReturnToGameModeSelection()
     {
-        Debug.Log("Returning to Game Mode Panel...");
+        Debug.Log("Returning to Level Selection Panel...");
 
         // Reset scores if you want
         ResetScores();
 
-        // Here's the important line:
-        // We set a different key in PlayerPrefs: "ShowGameModePanel"
-        PlayerPrefs.SetInt("ShowGameModePanel", 1);
+        // Set flag to show the level selection panel instead of game mode panel
+        PlayerPrefs.SetInt("ShowLevelSelectPanel", 1);
         PlayerPrefs.Save();
 
         // Load the main menu scene
