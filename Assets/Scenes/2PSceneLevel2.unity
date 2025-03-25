@@ -2691,7 +2691,7 @@ MonoBehaviour:
   - {fileID: -1786185769569073130, guid: cce5f3305104dd240aa537d2a3441dc1, type: 3}
   - {fileID: -7575001169450233029, guid: 08b4d3f73815d2047a4cba8fa6e53d9c, type: 3}
   jumpAnimationSpeed: 0.04
-  jumpDistance: 5
+  jumpDistance: 8
   jumpCooldown: 1
 --- !u!61 &1407752549
 BoxCollider2D:
@@ -3380,7 +3380,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 18
   isGameOver: 0
-  jumpDistance: 5
+  jumpDistance: 8
   jumpCooldown: 1
   jumpSound: {fileID: 8300000, guid: d418ff6de95c76246a69d427222078a9, type: 3}
   gameOverText: {fileID: 0}

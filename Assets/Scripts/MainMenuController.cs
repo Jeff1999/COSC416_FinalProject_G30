@@ -37,9 +37,9 @@ public class MainMenuController : MonoBehaviour
     public GameObject backToGameModeItem;
 
     // Level paths
-    public string level1ScenePath = "Assets/Scenes/Level1.unity";
-    public string level2ScenePath = "Assets/Scenes/Level2.unity";
-    public string level3ScenePath = "Assets/Scenes/Level3.unity";
+    public string level1ScenePath = "Assets/Scenes/2PSceneLevel1.unity";
+    public string level2ScenePath = "Assets/Scenes/2PSceneLevel2.unity";
+    public string level3ScenePath = "Assets/Scenes/2PSceneLevel3.unity";
 
     // **Audio Elements**
     [Header("Audio Settings")]
@@ -587,9 +587,20 @@ public class MainMenuController : MonoBehaviour
                 break;
 
             case 2:
-                Debug.Log("Level 3 Selected - Not implemented yet");
-                // When ready: LoadLevel(3);
+                Debug.Log("Level 3 Selected => Loading 2PSceneLevel3");
+                try
+                {
+                    // Load the 2PSceneLevel3 by name
+                    SceneManager.LoadScene("2PSceneLevel3");
+                }
+                catch (System.Exception)
+                {
+                    // Fallback to path loading if needed
+                    Debug.LogWarning("Failed to load scene by name. Trying by path...");
+                    SceneManager.LoadSceneAsync(level3ScenePath);
+                }
                 break;
+
             case 3:
                 Debug.Log("Returning to Game Mode Selection...");
                 CloseLevelSelectPanel();
