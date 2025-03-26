@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // Shooting
+public GameObject bulletPrefab;
+public Transform firePoint;
+public float bulletSpeed = 10f;
     public float speed = 5f;
     private Vector2 moveDirection;
     private bool canTurn = true;
@@ -98,6 +102,12 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
+            // Handle shooting
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Shoot();
+            }
+
 
             // Handle input for jumping
             if (canJump && !isJumping)
@@ -481,6 +491,18 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("Game Over! Press R to restart.");
         }
     }
+    void Shoot()
+{
+    if (bulletPrefab != null && firePoint != null)
+    {
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = moveDirection.normalized * bulletSpeed;
+        }
+    }
+}
 
     void RestartGame()
     {
