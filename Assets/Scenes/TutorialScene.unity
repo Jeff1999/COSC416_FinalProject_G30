@@ -1940,7 +1940,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bee7374a43895564494bf2b10e3cfda6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 18
+  speed: 1
   isGameOver: 0
   forwardRayDistance: 25
   sideRayDistance: 15
@@ -2284,6 +2284,18 @@ PrefabInstance:
     - target: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
       propertyPath: m_Name
       value: Bullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 3452852636396187354, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
+      propertyPath: m_BodyType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3452852636396187354, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219031518883853056, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8155391996459222455, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
       propertyPath: m_LocalPosition.x

@@ -11,16 +11,31 @@ public class Bullet : MonoBehaviour
         rb.linearVelocity = transform.up * speed; // Use `.up` if your firepoint is facing up
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+   void OnTriggerEnter2D(Collider2D other)
+{
+    Debug.Log("Bullet hit something: " + other.gameObject.name + " Tag: " + other.tag);
+
+    if (other.CompareTag("Player"))
     {
-        if (other.CompareTag("Player") && other.gameObject != this.gameObject)
-        {
-            Destroy(other.gameObject); // Destroy the other player
-            Destroy(gameObject);       // Destroy the bullet
-        }
-        else if (other.CompareTag("Boundary") || other.CompareTag("Wall") || other.CompareTag("OpponentBorder"))
-        {
-            Destroy(gameObject); // Bullet hits boundary
-        }
+        Debug.Log("Bullet hit a Player! Destroying...");
+        Destroy(other.gameObject);  // or whatever effect you want
+        Destroy(gameObject);
     }
+    else if (other.CompareTag("Wall") || other.CompareTag("Boundary") || other.CompareTag("OpponentBorder"))
+    {
+        Debug.Log("Bullet hit a wall/boundary. Destroying bullet.");
+        Destroy(gameObject);
+    }
+}
+void Update()
+{
+    Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 0.1f);
+    foreach (var hit in hits)
+    {
+        Debug.Log("Detected nearby: " + hit.name + " with tag: " + hit.tag);
+    }
+}
+
+
+
 }
