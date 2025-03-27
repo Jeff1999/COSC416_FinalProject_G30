@@ -9,6 +9,8 @@ TagManager:
   - Music
   - Trail
   - OpponentBorder
+  - Bullet
+  - Op
   layers:
   - Default
   - TransparentFX
