@@ -1198,6 +1198,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
   m_PrefabInstance: {fileID: 1894250964574887826}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &895122366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895122361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c3c7ab47ba924f758bd89fb7e536bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 20
 --- !u!1 &1015975249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1923,7 +1936,7 @@ GameObject:
   - component: {fileID: 1582703166}
   m_Layer: 0
   m_Name: AIOpponent
-  m_TagString: Player
+  m_TagString: Op
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2115,7 +2128,7 @@ Transform:
   m_GameObject: {fileID: 1582703160}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 38, y: 22, z: 0}
+  m_LocalPosition: {x: 35, y: 20, z: 0}
   m_LocalScale: {x: 5, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2285,6 +2298,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bullet
       objectReference: {fileID: 0}
+    - target: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
+      propertyPath: m_TagString
+      value: Bullet
+      objectReference: {fileID: 0}
     - target: {fileID: 3452852636396187354, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
       propertyPath: m_BodyType
       value: 1
@@ -2340,7 +2357,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 895122366}
   m_SourcePrefab: {fileID: 100100000, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
 --- !u!1001 &3659226297630055123
 PrefabInstance:
@@ -2356,11 +2376,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2784823189012425898, guid: 95ba605c8acf64905b6f666ab340fb8f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -38
+      value: -35.7
       objectReference: {fileID: 0}
     - target: {fileID: 2784823189012425898, guid: 95ba605c8acf64905b6f666ab340fb8f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 22
+      value: 19.9
       objectReference: {fileID: 0}
     - target: {fileID: 2784823189012425898, guid: 95ba605c8acf64905b6f666ab340fb8f, type: 3}
       propertyPath: m_LocalPosition.z
