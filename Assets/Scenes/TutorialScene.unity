@@ -1198,19 +1198,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
   m_PrefabInstance: {fileID: 1894250964574887826}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &895122366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 895122361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c3c7ab47ba924f758bd89fb7e536bb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 20
 --- !u!1 &1015975249
 GameObject:
   m_ObjectHideFlags: 0
@@ -2298,22 +2285,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bullet
       objectReference: {fileID: 0}
-    - target: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
-      propertyPath: m_TagString
-      value: Bullet
-      objectReference: {fileID: 0}
-    - target: {fileID: 3452852636396187354, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3452852636396187354, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5219031518883853056, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8155391996459222455, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
       propertyPath: m_LocalPosition.x
       value: -45.21
@@ -2357,10 +2328,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 895122366}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
 --- !u!1001 &3659226297630055123
 PrefabInstance:
