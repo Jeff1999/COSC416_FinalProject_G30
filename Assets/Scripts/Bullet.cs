@@ -15,7 +15,7 @@ public class Bullet : MonoBehaviour
 {
     
  Debug.Log("Bullet hit: " + other.gameObject.name + " with tag: " + other.tag);
-    if (other.gameObject.name == "AIOpponent" || other.gameObject.name == "Player2")
+    if (other.gameObject.name == "AIOpponent" || other.gameObject.name == "Player2"|| other.gameObject.name == "Player")
 {
     Debug.Log("Fuck me:"); 
    
