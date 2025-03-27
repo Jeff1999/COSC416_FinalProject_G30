@@ -558,12 +558,12 @@ public class MainMenuController : MonoBehaviour
                 break;
             case 4: //Level 5
                 // Position arrow next to Level 5
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, -230);
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(640, -230);
                 break;
 
             default:
                 // Default to Return position
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(0, 0);
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(200, -456);
                 break;
         }
     }
@@ -618,6 +618,36 @@ public class MainMenuController : MonoBehaviour
                 break;
 
             case 3:
+                Debug.Log("Level 3 Selected => Loading 2PSceneLevel4");
+                try
+                {
+                    // Load the 2PSceneLevel3 by name
+                    SceneManager.LoadScene("2PSceneLevel4");
+                }
+                catch (System.Exception)
+                {
+                    // Fallback to path loading if needed
+                    Debug.LogWarning("Failed to load scene by name. Trying by path...");
+                    SceneManager.LoadSceneAsync(level3ScenePath);
+                }
+                break;
+
+            case 4:
+                Debug.Log("Level 3 Selected => Loading 2PSceneLevel5");
+                try
+                {
+                    // Load the 2PSceneLevel3 by name
+                    SceneManager.LoadScene("2PSceneLevel5");
+                }
+                catch (System.Exception)
+                {
+                    // Fallback to path loading if needed
+                    Debug.LogWarning("Failed to load scene by name. Trying by path...");
+                    SceneManager.LoadSceneAsync(level3ScenePath);
+                }
+                break;
+
+            case 5:
                 Debug.Log("Returning to Game Mode Selection...");
                 CloseLevelSelectPanel();
                 break;
