@@ -1413,7 +1413,7 @@ GameObject:
   - component: {fileID: 661412447}
   - component: {fileID: 661412446}
   m_Layer: 5
-  m_Name: Level1Border
+  m_Name: Level4Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2990,7 +2990,7 @@ GameObject:
   - component: {fileID: 1534087013}
   - component: {fileID: 1534087012}
   m_Layer: 5
-  m_Name: Level1BorderBorder
+  m_Name: Level4BorderBorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
