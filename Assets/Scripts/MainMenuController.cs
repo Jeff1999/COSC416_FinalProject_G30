@@ -34,12 +34,16 @@ public class MainMenuController : MonoBehaviour
     public GameObject level1Item;
     public GameObject level2Item;
     public GameObject level3Item;
+    public GameObject level4Item; 
+    public GameObject level5Item;
     public GameObject backToGameModeItem;
 
     // Level paths
     public string level1ScenePath = "Assets/Scenes/2PSceneLevel1.unity";
     public string level2ScenePath = "Assets/Scenes/2PSceneLevel2.unity";
     public string level3ScenePath = "Assets/Scenes/2PSceneLevel3.unity";
+    public string level4ScenePath = "Assets/Scenes/2PSceneLevel4.unity";
+    public string level5ScenePath = "Assets/Scenes/2PSceneLevel5.unity";
 
     // **Audio Elements**
     [Header("Audio Settings")]
@@ -136,15 +140,19 @@ public class MainMenuController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                // Return → Level 1 → Level 2 → Level 3 → Return
-                if (levelIndex == 3)      // From Return
+                // Return → Level 1 → Level 2 → Level 3 → Level 4 → Level 5 → Return
+                if (levelIndex == 5)      // From Return
                     levelIndex = 0;       // Go to Level 1
                 else if (levelIndex == 0) // From Level 1
                     levelIndex = 1;       // Go to Level 2
                 else if (levelIndex == 1) // From Level 2
                     levelIndex = 2;       // Go to Level 3
                 else if (levelIndex == 2) // From Level 3
-                    levelIndex = 3;       // Go to Return
+                    levelIndex = 3;       // Go to Level 4
+                else if (levelIndex == 3) // From Level 4
+                    levelIndex = 4;       // Go to Level 5
+                else if (levelIndex == 4) // From Level 5
+                    levelIndex = 5;       // Go to Return
 
                 UpdateLevelSelection();
                 PlayScrollSound();
@@ -153,14 +161,18 @@ public class MainMenuController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 // Return → Level 3 → Level 2 → Level 1 → Return
-                if (levelIndex == 3)      // From Return
-                    levelIndex = 2;       // Go to Level 3
+                if (levelIndex == 5)      // From Return
+                    levelIndex = 4;       // Go to Level 5
+                else if (levelIndex == 4) // From Level 5
+                    levelIndex = 3;       // Go to Level 4
+                else if (levelIndex == 3) // From Level 4
+                    levelIndex = 2;  // Go to Level 3
                 else if (levelIndex == 2) // From Level 3
                     levelIndex = 1;       // Go to Level 2
                 else if (levelIndex == 1) // From Level 2
-                    levelIndex = 0;       // Go to Level 1
+                    levelIndex = 0;        // Go to Level 1
                 else if (levelIndex == 0) // From Level 1
-                    levelIndex = 3;       // Go to Return
+                    levelIndex = 5;       // Go to Return
 
                 UpdateLevelSelection();
                 PlayScrollSound();
@@ -527,22 +539,26 @@ public class MainMenuController : MonoBehaviour
         {
             case 0: // Level 1
                 // Position arrow next to Level 1
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, -230);
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, 160);
                 break;
 
             case 1: // Level 2
                 // Position arrow next to Level 2
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(190, -230);
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(200, 160);
                 break;
 
             case 2: // Level 3
                 // Position arrow next to Level 3
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(640, -230);
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(640, 160);
                 break;
 
-            case 3: // Return
-                // Keep the working return button position
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(200, -465);
+            case 3: // Level 4
+                // Position arrow next to Level 4
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, -230);
+                break;
+            case 4: //Level 5
+                // Position arrow next to Level 5
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, -230);
                 break;
 
             default:
@@ -627,6 +643,14 @@ public class MainMenuController : MonoBehaviour
             case 3:
                 scenePath = level3ScenePath;
                 sceneName = "Level3";
+                break;
+            case 4: 
+                scenePath = level4ScenePath;
+                sceneName = "Level4";
+                break;
+            case 5:
+                scenePath = level5ScenePath;
+                sceneName = "Level5";
                 break;
         }
 
