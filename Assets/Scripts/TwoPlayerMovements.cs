@@ -3,6 +3,10 @@ using System.Collections;
 
 public class TwoPlayerMovements : MonoBehaviour
 {
+    //Bullet Movement
+        public GameObject bulletPrefab;
+    public Transform firePoint;
+    public float bulletSpeed = 10f;
     // -- SPEED / MOVEMENT --
     public float speed = 20f;
     private Vector2 moveDirection;
@@ -98,6 +102,10 @@ public class TwoPlayerMovements : MonoBehaviour
                     }
                 }
             }
+            if (Input.GetKeyDown(KeyCode.Semicolon))
+                {
+                    Shoot();
+                }
 
             // Handle input for jumping
             if (canJump && !isJumping)
@@ -419,6 +427,19 @@ public class TwoPlayerMovements : MonoBehaviour
                 gameOverText.SetActive(true);
             }
             Debug.LogError("No TwoPlayerGameController found!");
+        }
+    }
+
+    void Shoot()
+    {
+        if (bulletPrefab != null && firePoint != null)
+        {
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.linearVelocity = moveDirection.normalized * bulletSpeed;
+            }
         }
     }
 }
