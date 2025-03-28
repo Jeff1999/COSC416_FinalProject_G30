@@ -11,19 +11,25 @@ public class Bullet : MonoBehaviour
         // rb.linearVelocity = transform.up * speed; // Use .up if your firepoint is facing up
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-{
-    
- Debug.Log("Bullet hit: " + other.gameObject.name + " with tag: " + other.tag);
-    if (other.gameObject.name == "AIOpponent" || other.gameObject.name == "Player2"|| other.gameObject.name == "Player")
-{
-    Debug.Log("Fuck me:"); 
-   
-    Destroy(other.gameObject);
-    Destroy(gameObject);
+ void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Bullet hit: " + other.gameObject.name + " with tag: " + other.tag);
 
-}
+        if (other.CompareTag("Player") || other.CompareTag("Op"))
+        {
+            PlayerMovement cycle = other.GetComponent<PlayerMovement>(); // Use the correct script name attached to your cycle
+            if (cycle != null)
+            {
+                cycle.CrashByBullet(); // Call a method to handle the crash
+            }
 
+            Destroy(gameObject);
+        }
 
-}
+        // Optional: Destroy bullet if it hits walls or trails
+        if (other.CompareTag("Wall") || other.CompareTag("Trail") || other.CompareTag("OpponentBorder"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

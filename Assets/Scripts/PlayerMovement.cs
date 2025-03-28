@@ -310,7 +310,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail")) && !isGameOver)
+        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail"))|| other.CompareTag("Bullet") && !isGameOver)
         {
             if (twoPlayerController != null)
             {
@@ -339,6 +339,40 @@ public class PlayerMovement : MonoBehaviour
             GameOver();
         }
     }
+    public void CrashByBullet()
+{
+    if (isGameOver || isJumping) return;
+
+    TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
+
+    isGameOver = true;
+    speed = 0;
+
+    if (crashSound != null && audioSource != null)
+    {
+        audioSource.clip = crashSound;
+        audioSource.Play();
+    }
+
+    if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+    {
+        CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+        if (crashAnimation != null)
+        {
+            crashAnimation.StartCrashAnimation(transform.position);
+        }
+    }
+
+    if (twoPlayerController != null)
+    {
+        twoPlayerController.PlayerCrashed(); // You can customize this based on who got hit
+    }
+    else
+    {
+        GameOver();
+    }
+}
+
 
     void HandleTie()
     {
