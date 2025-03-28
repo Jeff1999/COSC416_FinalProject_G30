@@ -1,3 +1,4 @@
+// Bullet.cs
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -7,26 +8,64 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        // rb.velocity = transform.up * speed; // Uncomment and set direction properly if needed
+        // rb.linearVelocity = transform.up * speed; // Use .up if your firepoint is facing up
     }
-    void OnTriggerEnter2D(Collider2D other)
+
+//     void OnTriggerEnter2D(Collider2D other)
+// {
+    
+//  Debug.Log("Bullet hit: " + other.gameObject.name + " with tag: " + other.tag);
+//     if (other.gameObject.name == "AIOpponent" || other.gameObject.name == "Player2"|| other.gameObject.name == "Player")
+// {
+//     Debug.Log("Fuck me:"); 
+   
+//     Destroy(other.gameObject);
+//     Destroy(gameObject);
+
+// }
+
+
+// }
+
+void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Bullet hit: " + other.gameObject.name + " with tag: " + other.tag);
-        if (other.CompareTag("Player") || other.CompareTag("Op"))
+
+        if ( other.gameObject.name == "Player2"|| other.gameObject.name == "Player")
         {
-            PlayerMovement cycle = other.GetComponent<PlayerMovement>(); // Use the correct script name attached to your cycle
+            TwoPlayerMovements cycle = other.GetComponent<TwoPlayerMovements>();
+
             if (cycle != null)
             {
-                cycle.CrashByBullet(); // Call a method to handle the crash
+                cycle.CrashByBullet(); // Call the crash logic
             }
-            Destroy(gameObject);
-            // Optional: Destroy bullet if it hits walls or trails
+            else
+            {
+                Debug.LogWarning("2PlayerMovement not found on: " + other.gameObject.name);
+            }
+
+            Destroy(gameObject); // Destroy the bullet
+        }
+        if (other.gameObject.name == "AIOpponent")
+        {
+            AIController cycle = other.GetComponent<AIController>();
+
+            if (cycle != null)
+            {
+                cycle.CrashByBullet(); // Call the crash logic
+            }
+            else
+            {
+                Debug.LogWarning("PlayerMovement not found on: " + other.gameObject.name);
+            }
+
+            Destroy(gameObject); // Destroy the bullet
+        }
+
+
         if (other.CompareTag("Wall") || other.CompareTag("Trail") || other.CompareTag("OpponentBorder"))
         {
             Destroy(gameObject);
         }
-    
-        }
     }
-
 }

@@ -129,6 +129,39 @@ public class AIController : MonoBehaviour
         // Start the safety check system (runs more frequently)
         StartCoroutine(SafetyCheckCoroutine());
     }
+    public void CrashByBullet()
+{
+    if (isGameOver || isJumping) return;
+
+    TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
+
+    isGameOver = true;
+    speed = 0;
+
+    if (crashSound != null && audioSource != null)
+    {
+        audioSource.clip = crashSound;
+        audioSource.Play();
+    }
+
+    if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+    {
+        CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+        if (crashAnimation != null)
+        {
+            crashAnimation.StartCrashAnimation(transform.position);
+        }
+    }
+
+    if (twoPlayerController != null)
+    {
+        twoPlayerController.PlayerCrashed();
+    }
+    else
+    {
+        GameOver();
+    }
+}
 
     bool IsWallNearby(Vector2 direction, float distance)
     {

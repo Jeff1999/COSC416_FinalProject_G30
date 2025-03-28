@@ -317,6 +317,40 @@ public class TwoPlayerMovements : MonoBehaviour
         return false; // No collisions detected
     }
 
+    public void CrashByBullet()
+{
+    if (isGameOver || isJumping) return;
+
+    TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
+
+    isGameOver = true;
+    speed = 0;
+
+    if (crashSound != null && audioSource != null)
+    {
+        audioSource.clip = crashSound;
+        audioSource.Play();
+    }
+
+    if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+    {
+        CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+        if (crashAnimation != null)
+        {
+            crashAnimation.StartCrashAnimation(transform.position);
+        }
+    }
+
+    if (twoPlayerController != null)
+    {
+        twoPlayerController.PlayerCrashed();
+    }
+    else
+    {
+        GameOver();
+    }
+}
+
     IEnumerator JumpCooldown()
     {
         yield return new WaitForSeconds(jumpCooldown);
