@@ -1935,7 +1935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bee7374a43895564494bf2b10e3cfda6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 18
   isGameOver: 0
   forwardRayDistance: 25
   sideRayDistance: 15
