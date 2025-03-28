@@ -62,6 +62,21 @@ void OnTriggerEnter2D(Collider2D other)
             Destroy(gameObject); // Destroy the bullet
         }
 
+        // 💥 Destroy trail if bullet hits it
+    if (other.CompareTag("Trail"))
+    {
+        Debug.LogWarning("TrailTouched");
+
+
+        Destroy(other.gameObject); // Destroy trail segment
+        Destroy(gameObject);       // Destroy bullet
+    }
+
+    if (other.CompareTag("Wall") || other.CompareTag("OpponentBorder"))
+    {
+        Destroy(gameObject);
+    }
+
 
         if (other.CompareTag("Wall") || other.CompareTag("Trail") || other.CompareTag("OpponentBorder"))
         {
