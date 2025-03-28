@@ -1918,7 +1918,7 @@ GameObject:
   - component: {fileID: 1582703166}
   m_Layer: 0
   m_Name: AIOpponent
-  m_TagString: Op
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1935,7 +1935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bee7374a43895564494bf2b10e3cfda6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 18
   isGameOver: 0
   forwardRayDistance: 25
   sideRayDistance: 15

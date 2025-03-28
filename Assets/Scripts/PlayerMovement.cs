@@ -310,8 +310,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail"))|| other.CompareTag("Bullet") && !isGameOver)
-        {
+        if ((other.CompareTag("Wall") || other.CompareTag("OpponentBorder") || other.CompareTag("Trail"))|| other.CompareTag("Bullet") && !isGameOver){
             if (twoPlayerController != null)
             {
                 isGameOver = true;
