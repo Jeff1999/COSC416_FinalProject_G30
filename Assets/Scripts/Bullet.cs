@@ -1,4 +1,3 @@
-// Bullet.cs
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -8,14 +7,14 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        // rb.linearVelocity = transform.up * speed; // Use .up if your firepoint is facing up
+        // rb.velocity = transform.up * speed; // Uncomment and set direction properly if needed
     }
 
- void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Bullet hit: " + other.gameObject.name + " with tag: " + other.tag);
 
-        if (other.CompareTag("Player") || other.CompareTag("Op"))
+        if (other.CompareTag("Player") || other.gameObject.name == "AIOpponent") 
         {
             PlayerMovement cycle = other.GetComponent<PlayerMovement>(); // Use the correct script name attached to your cycle
             if (cycle != null)
