@@ -4,75 +4,56 @@ using System.Collections;
 
 public class LevelMusic : MonoBehaviour
 {
-    [HideInInspector] // We'll access this from CountdownController
+    [HideInInspector]
     public AudioSource audioSource;
+
     [Header("Level Music Settings")]
-    public AudioClip levelMusic; // Assign this in Inspector
+    public AudioClip levelMusic;
     [Range(0f, 2f)]
     public float musicVolume = 1.5f;
 
     [Header("Fade Settings")]
     public float fadeInDuration = 3.0f;
 
-    // The name of this level scene
     public string levelSceneName;
 
-    // Static reference to ensure only one instance exists
-    private static LevelMusic instance;
+    public static LevelMusic instance;
 
-    // Coroutine reference to manage fading
     private Coroutine fadeCoroutine;
-
-    // Flag to check if CountdownController exists in the scene
     private bool hasCountdownController = false;
 
     void Awake()
     {
-        // Singleton pattern - ensure only one music manager exists
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // Get or add the AudioSource component
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
-            {
                 audioSource = gameObject.AddComponent<AudioSource>();
-            }
 
-            // Configure the AudioSource
             audioSource.playOnAwake = false;
             audioSource.loop = true;
 
-            // If no level name was set, use the current scene name
             if (string.IsNullOrEmpty(levelSceneName))
-            {
                 levelSceneName = SceneManager.GetActiveScene().name;
-            }
 
-            // Register for scene change events
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else if (instance != this)
         {
-            // Destroy any duplicate instances
             Destroy(gameObject);
-            return;
         }
     }
 
     void Start()
     {
-        // This only runs for the valid instance
         if (instance == this && levelMusic != null)
         {
             audioSource.clip = levelMusic;
-
-            // Check if a CountdownController exists in the scene
             hasCountdownController = FindFirstObjectByType<CountdownController>() != null;
 
-            // Only auto-play if there's no countdown controller
             if (SceneManager.GetActiveScene().name == levelSceneName && !hasCountdownController)
             {
                 PlayMusic();
@@ -80,16 +61,12 @@ public class LevelMusic : MonoBehaviour
         }
     }
 
-    // Called when a scene is loaded
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == levelSceneName)
         {
-            // Check if a CountdownController exists in the newly loaded scene
             hasCountdownController = FindFirstObjectByType<CountdownController>() != null;
 
-            // Only auto-play if there's no countdown controller
-            // If there is a countdown, it will call PlayMusic() when ready
             if (!hasCountdownController)
             {
                 PlayMusic();
@@ -97,7 +74,6 @@ public class LevelMusic : MonoBehaviour
         }
         else
         {
-            // We're not in this level, stop the music
             StopMusic();
         }
     }
@@ -106,13 +82,9 @@ public class LevelMusic : MonoBehaviour
     {
         if (audioSource != null && levelMusic != null)
         {
-            // Stop any ongoing fade
             if (fadeCoroutine != null)
-            {
                 StopCoroutine(fadeCoroutine);
-            }
 
-            // Start the music at zero volume if it's not already playing
             if (!audioSource.isPlaying)
             {
                 audioSource.volume = 0f;
@@ -120,14 +92,12 @@ public class LevelMusic : MonoBehaviour
                 Debug.Log("LevelMusic: Started playing music for " + levelSceneName);
             }
 
-            // Start fading in
             fadeCoroutine = StartCoroutine(FadeIn());
         }
     }
 
     public void StopMusic()
     {
-        // Stop any ongoing fade
         if (fadeCoroutine != null)
         {
             StopCoroutine(fadeCoroutine);
@@ -153,15 +123,38 @@ public class LevelMusic : MonoBehaviour
             yield return null;
         }
 
-        // Ensure we end at the target volume
         audioSource.volume = musicVolume;
         fadeCoroutine = null;
     }
 
-    // Clean up on destroy
+    public void FadeOutAndStop(float fadeDuration = 1.5f)
+    {
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+        }
+        fadeCoroutine = StartCoroutine(FadeOutCoroutine(fadeDuration));
+    }
+
+    private IEnumerator FadeOutCoroutine(float duration)
+    {
+        float startVolume = audioSource.volume;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(startVolume, 0f, timer / duration);
+            yield return null;
+        }
+
+        audioSource.Stop();
+        audioSource.volume = musicVolume; // reset for next play
+        fadeCoroutine = null;
+    }
+
     void OnDestroy()
     {
-        // Only unregister if this is the active instance
         if (instance == this)
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -169,9 +162,3 @@ public class LevelMusic : MonoBehaviour
         }
     }
 }
-
-
-
-
-
-
