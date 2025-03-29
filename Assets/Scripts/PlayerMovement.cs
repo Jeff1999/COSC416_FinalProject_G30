@@ -36,9 +36,25 @@ public class PlayerMovement : MonoBehaviour
     private Sprite originalSprite;
 
     private TrailManager trailManager;
+    public AudioClip hitSound; 
+    private AudioSource audioSourceB;
+   
 
     void Start()
     {
+
+// Add an AudioSource if the object doesn't already have one
+        audioSource = gameObject.GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1.0f; // 3D sound
+        
+
+        
         // ✅ Set initial rotation to face RIGHT (not UP)
         transform.eulerAngles = new Vector3(0, 0, -90);
 
@@ -448,6 +464,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (bulletPrefab != null && firePoint != null)
         {
+            audioSource.PlayOneShot(hitSound);
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
             if (rb != null)

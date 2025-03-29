@@ -46,12 +46,30 @@ void OnTriggerEnter2D(Collider2D other)
 
             Destroy(gameObject); // Destroy the bullet
         }
+
+         if (other.gameObject.name == "Player")
+        {
+            PlayerMovement cycle = other.GetComponent<PlayerMovement>();
+
+            if (cycle != null)
+            {
+                cycle.CrashByBullet(); // Call the crash logic
+            }
+            else
+            {
+                Debug.LogWarning("2PlayerMovement not found on: " + other.gameObject.name);
+            }
+
+            Destroy(gameObject); // Destroy the bullet
+        }
+
         if (other.gameObject.name == "AIOpponent")
         {
             AIController cycle = other.GetComponent<AIController>();
 
             if (cycle != null)
             {
+                
                 cycle.CrashByBullet(); // Call the crash logic
             }
             else
@@ -65,9 +83,7 @@ void OnTriggerEnter2D(Collider2D other)
         // 💥 Destroy trail if bullet hits it
     if (other.CompareTag("Trail"))
     {
-        Debug.LogWarning("TrailTouched");
-
-
+        
         Destroy(other.gameObject); // Destroy trail segment
         Destroy(gameObject);       // Destroy bullet
     }

@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8051c2600b7cdbf4083f20d12a6b5dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
   firePoint: {fileID: 3358630764117556622}
   bulletSpeed: 40
   speed: 18
@@ -183,6 +183,7 @@ MonoBehaviour:
   jumpAnimationSpeed: 0.04
   jumpDistance: 6
   jumpCooldown: 1
+  hitSound: {fileID: 8300000, guid: 192232beccd3541b7b1ea8b82448e887, type: 3}
 --- !u!50 &6136320415041284858
 Rigidbody2D:
   serializedVersion: 5
