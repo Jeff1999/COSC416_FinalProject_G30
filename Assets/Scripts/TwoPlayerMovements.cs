@@ -37,9 +37,22 @@ public class TwoPlayerMovements : MonoBehaviour
 
     // -- TRAIL MANAGER --
     private TrailManager trailManager;
+     public AudioClip hitSound; 
+    private AudioSource audioSourceB;
 
     void Start()
     {
+
+         audioSource = gameObject.GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1.0f; // 3D sound
+        
+
         // Set initial movement direction based on rotation
         float angle = transform.eulerAngles.z * Mathf.Deg2Rad;
         moveDirection = new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle));
@@ -317,6 +330,40 @@ public class TwoPlayerMovements : MonoBehaviour
         return false; // No collisions detected
     }
 
+    public void CrashByBullet()
+{
+    if (isGameOver || isJumping) return;
+
+    TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
+
+    isGameOver = true;
+    speed = 0;
+
+    if (crashSound != null && audioSource != null)
+    {
+        audioSource.clip = crashSound;
+        audioSource.Play();
+    }
+
+    if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+    {
+        CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+        if (crashAnimation != null)
+        {
+            crashAnimation.StartCrashAnimation(transform.position);
+        }
+    }
+
+    if (twoPlayerController != null)
+    {
+        twoPlayerController.PlayerCrashed();
+    }
+    else
+    {
+        GameOver();
+    }
+}
+
     IEnumerator JumpCooldown()
     {
         yield return new WaitForSeconds(jumpCooldown);
@@ -434,6 +481,7 @@ public class TwoPlayerMovements : MonoBehaviour
     {
         if (bulletPrefab != null && firePoint != null)
         {
+            audioSource.PlayOneShot(hitSound);
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
             if (rb != null)

@@ -224,7 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cbe7f2febe720c40b5207769b840893, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}
   firePoint: {fileID: 6706643936082857290}
   bulletSpeed: 40
   speed: 18
@@ -256,6 +256,7 @@ MonoBehaviour:
   - {fileID: -1786185769569073130, guid: cce5f3305104dd240aa537d2a3441dc1, type: 3}
   - {fileID: -7575001169450233029, guid: 08b4d3f73815d2047a4cba8fa6e53d9c, type: 3}
   jumpAnimationSpeed: 0.04
+  hitSound: {fileID: 8300000, guid: 192232beccd3541b7b1ea8b82448e887, type: 3}
 --- !u!1 &9201249099460840955
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,9 +36,25 @@ public class PlayerMovement : MonoBehaviour
     private Sprite originalSprite;
 
     private TrailManager trailManager;
+    public AudioClip hitSound; 
+    private AudioSource audioSourceB;
+   
 
     void Start()
     {
+
+// Add an AudioSource if the object doesn't already have one
+        audioSource = gameObject.GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1.0f; // 3D sound
+        
+
+        
         // ✅ Set initial rotation to face RIGHT (not UP)
         transform.eulerAngles = new Vector3(0, 0, -90);
 
@@ -260,6 +276,40 @@ public class PlayerMovement : MonoBehaviour
 
         return false;
     }
+    public void CrashByBullet()
+{
+    if (isGameOver || isJumping) return;
+
+    TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
+
+    isGameOver = true;
+    speed = 0;
+
+    if (crashSound != null && audioSource != null)
+    {
+        audioSource.clip = crashSound;
+        audioSource.Play();
+    }
+
+    if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+    {
+        CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+        if (crashAnimation != null)
+        {
+            crashAnimation.StartCrashAnimation(transform.position);
+        }
+    }
+
+    if (twoPlayerController != null)
+    {
+        twoPlayerController.PlayerCrashed();
+    }
+    else
+    {
+        GameOver();
+    }
+}
+
 
     IEnumerator JumpCooldown()
     {
@@ -340,6 +390,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+   
+
     void HandleTie()
     {
         if (crashSound != null && audioSource != null)
@@ -412,6 +464,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (bulletPrefab != null && firePoint != null)
         {
+            audioSource.PlayOneShot(hitSound);
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
             if (rb != null)
