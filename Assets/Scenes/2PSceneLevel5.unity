@@ -1078,7 +1078,6 @@ MonoBehaviour:
   scoreTextPlayer1: {fileID: 1797795056}
   scoreTextPlayer2: {fileID: 1015975250}
   mainMenuSceneName: MainMenuScene
-  hitSoundGam: {fileID: 8300000, guid: 891c2a81752214dba8bfca8ad9874abb, type: 3}
 --- !u!1 &859881929
 GameObject:
   m_ObjectHideFlags: 0
@@ -2922,6 +2921,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8529593944824244249, guid: 808285adacf0f9446880bc86f23e9b5f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1770711690}
+    - targetCorrespondingSourceObject: {fileID: 8529593944824244249, guid: 808285adacf0f9446880bc86f23e9b5f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2005937019}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 808285adacf0f9446880bc86f23e9b5f, type: 3}
 <<<<<<< Updated upstream

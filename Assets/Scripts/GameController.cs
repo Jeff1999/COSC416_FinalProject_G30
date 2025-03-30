@@ -157,8 +157,6 @@ void StopAllOtherAudio()
     // Called when both players collide (tie)
     public void TieGame()
     {
-        StopAllOtherAudio();
-            audioSource.PlayOneShot(hitSoundGam);
         if (gameOver) return;
         gameOver = true;
 
@@ -221,8 +219,7 @@ void StopAllOtherAudio()
         // Show game over panel
         if (gameOverPanel != null)
         {
-            StopAllOtherAudio();
-            audioSource.PlayOneShot(hitSoundGam);
+
             gameOverPanel.SetActive(true);
         }
 

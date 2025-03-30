@@ -1524,6 +1524,7 @@ MonoBehaviour:
   scoreTextPlayer2: {fileID: 1015975250}
   mainMenuSceneName: MainMenuScene
   hitSoundGam: {fileID: 8300000, guid: 891c2a81752214dba8bfca8ad9874abb, type: 3}
+  gameFont: {fileID: 0}
 --- !u!1 &974266665
 GameObject:
   m_ObjectHideFlags: 0
@@ -1688,8 +1689,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
-  m_sharedMaterial: {fileID: -2431143938904986706, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1843,8 +1844,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Program Updates this text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
-  m_sharedMaterial: {fileID: -2431143938904986706, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2712,8 +2713,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
-  m_sharedMaterial: {fileID: -2431143938904986706, guid: e94f30a953c8533489568e1be29b8f94, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

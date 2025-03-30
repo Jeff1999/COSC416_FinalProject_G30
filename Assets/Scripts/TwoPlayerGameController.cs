@@ -26,6 +26,11 @@ public class TwoPlayerGameController : MonoBehaviour
     [Header("Scene Navigation")]
     public string mainMenuSceneName = "MainMenuScene";
 
+    [Header("Audio")]
+    public AudioClip hitSoundGam;
+    private AudioSource audioSource;
+    private AudioSource myAudioSource;
+
     private PlayerMovement playerMovement;
     private AIController aiController;
     private TwoPlayerMovements player2Movement;
@@ -37,70 +42,73 @@ public class TwoPlayerGameController : MonoBehaviour
     private const string PLAYER1_SCORE_KEY = "Player1Score";
     private const string PLAYER2_SCORE_KEY = "Player2Score";
 
+    // Font reference
+    public TMP_FontAsset gameFont;  // Add this line to reference the font asset
+
     void Start()
     {
-        // Get components
+        audioSource = gameObject.GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1.0f;
+
         playerMovement = player.GetComponent<PlayerMovement>();
         aiController = aiPlayer.GetComponent<AIController>();
         player2Movement = aiPlayer.GetComponent<TwoPlayerMovements>();
 
-        // Load scores
         LoadScores();
         UpdateScoreDisplays();
 
-        // Hide game over texts
+        // Set the font for all text components
+        player1WinsText.font = gameFont;
+        player2WinsText.font = gameFont;
+        tieGameText.font = gameFont;
+        scoreTextPlayer1.font = gameFont;
+        scoreTextPlayer2.font = gameFont;
+
         if (player1WinsText != null) player1WinsText.gameObject.SetActive(false);
         if (player2WinsText != null) player2WinsText.gameObject.SetActive(false);
-        if (tieGameText != null)     tieGameText.gameObject.SetActive(false);
+        if (tieGameText != null) tieGameText.gameObject.SetActive(false);
 
-        // Hide gameOverPanel
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(false);
-        }
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
-        // Set up collision tags/colliders
         SetupPlayerCollision();
 
-        // Start countdown
         StartCoroutine(CountdownAndStart());
     }
 
     IEnumerator CountdownAndStart()
     {
-        // Freeze both players at the start
         if (playerMovement != null) playerMovement.enabled = false;
-        if (aiController != null)   aiController.enabled   = false;
+        if (aiController != null) aiController.enabled = false;
         if (player2Movement != null) player2Movement.enabled = false;
 
         if (countdownText != null)
         {
             countdownText.gameObject.SetActive(true);
 
-            // 3-2-1 countdown
             for (int i = 3; i > 0; i--)
             {
                 countdownText.text = i.ToString();
                 yield return new WaitForSeconds(0.9f);
             }
 
-            // Show GO! text
             countdownText.text = "GO!";
             yield return new WaitForSeconds(0.4f);
 
-            // Hide countdown
             countdownText.gameObject.SetActive(false);
         }
         else
         {
-            // No countdown text? just wait 3 seconds
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(3f);
         }
 
-        // Unfreeze players if not game over
-        if (!gameOver && playerMovement != null)   playerMovement.enabled = true;
-        if (!gameOver && aiController != null)     aiController.enabled   = true;
-        if (!gameOver && player2Movement != null)  player2Movement.enabled= true;
+        if (!gameOver && playerMovement != null) playerMovement.enabled = true;
+        if (!gameOver && aiController != null) aiController.enabled = true;
+        if (!gameOver && player2Movement != null) player2Movement.enabled = true;
     }
 
     void SetupPlayerCollision()
@@ -108,12 +116,12 @@ public class TwoPlayerGameController : MonoBehaviour
         if (player != null && !player.CompareTag("Player")) player.tag = "Player";
         if (aiPlayer != null && !aiPlayer.CompareTag("Player")) aiPlayer.tag = "Player";
 
-        // Add colliders if missing
         if (player != null && player.GetComponent<Collider2D>() == null)
         {
             BoxCollider2D col = player.AddComponent<BoxCollider2D>();
             col.isTrigger = true;
         }
+
         if (aiPlayer != null && aiPlayer.GetComponent<Collider2D>() == null)
         {
             BoxCollider2D col = aiPlayer.AddComponent<BoxCollider2D>();
@@ -140,6 +148,7 @@ public class TwoPlayerGameController : MonoBehaviour
         {
             scoreTextPlayer1.text = "Player 1\n\n\nScore: " + player1Score;
         }
+
         if (scoreTextPlayer2 != null)
         {
             scoreTextPlayer2.text = "Player 2\n\n\nScore: " + player2Score;
@@ -154,13 +163,72 @@ public class TwoPlayerGameController : MonoBehaviour
         StopAllPlayers();
         TriggerBothCrashAnimations();
 
-        if (tieGameText != null)
+        StopAllOtherAudio();
+        audioSource.PlayOneShot(hitSoundGam);
+
+        if (tieGameText != null) tieGameText.gameObject.SetActive(true);
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+    }
+
+    public void PlayerCrashed()
+    {
+        if (gameOver) return;
+        gameOver = true;
+
+        player2Score++;
+        SaveScores();
+        StopAllPlayers();
+        TriggerBothCrashAnimations();
+
+        StopAllOtherAudio();
+        audioSource.PlayOneShot(hitSoundGam);
+
+        if (player2WinsText != null) player2WinsText.gameObject.SetActive(true);
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+
+        UpdateScoreDisplays();
+    }
+
+    public void AIPlayerCrashed()
+    {
+        if (gameOver) return;
+        gameOver = true;
+
+        player1Score++;
+        SaveScores();
+        StopAllPlayers();
+        TriggerBothCrashAnimations();
+
+        StopAllOtherAudio();
+        audioSource.PlayOneShot(hitSoundGam);
+
+        if (player1WinsText != null) player1WinsText.gameObject.SetActive(true);
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+
+        UpdateScoreDisplays();
+    }
+
+    private void StopAllPlayers()
+    {
+        if (playerMovement != null)
         {
-            tieGameText.gameObject.SetActive(true);
+            playerMovement.isGameOver = true;
+            playerMovement.speed = 0;
+            playerMovement.enabled = false;
         }
-        if (gameOverPanel != null)
+
+        if (aiController != null)
         {
-            gameOverPanel.SetActive(true);
+            aiController.isGameOver = true;
+            aiController.speed = 0;
+            aiController.enabled = false;
+        }
+
+        if (player2Movement != null)
+        {
+            player2Movement.isGameOver = true;
+            player2Movement.speed = 0;
+            player2Movement.enabled = false;
         }
     }
 
@@ -169,10 +237,8 @@ public class TwoPlayerGameController : MonoBehaviour
         CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
         if (crashAnimation != null)
         {
-            if (player != null)
-                crashAnimation.StartCrashAnimation(player.transform.position);
-            if (aiPlayer != null)
-                crashAnimation.StartCrashAnimation(aiPlayer.transform.position);
+            if (player != null) crashAnimation.StartCrashAnimation(player.transform.position);
+            if (aiPlayer != null) crashAnimation.StartCrashAnimation(aiPlayer.transform.position);
         }
 
         PlayCrashSoundOnPlayer(player);
@@ -183,7 +249,6 @@ public class TwoPlayerGameController : MonoBehaviour
     {
         if (playerObj == null) return;
 
-        // Try PlayerMovement first
         PlayerMovement p1 = playerObj.GetComponent<PlayerMovement>();
         if (p1 != null && p1.crashSound != null)
         {
@@ -196,7 +261,6 @@ public class TwoPlayerGameController : MonoBehaviour
             return;
         }
 
-        // Next check TwoPlayerMovements
         TwoPlayerMovements p2 = playerObj.GetComponent<TwoPlayerMovements>();
         if (p2 != null && p2.crashSound != null)
         {
@@ -209,83 +273,21 @@ public class TwoPlayerGameController : MonoBehaviour
         }
     }
 
-    public void PlayerCrashed()
-    {
-        if (gameOver) return;
-        gameOver = true;
-
-        player2Score++;
-        SaveScores();
-        StopAllPlayers();
-
-        if (player2WinsText != null)
-        {
-            player2WinsText.gameObject.SetActive(true);
-        }
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(true);
-        }
-        UpdateScoreDisplays();
-    }
-
-    public void AIPlayerCrashed()
-    {
-        if (gameOver) return;
-        gameOver = true;
-
-        player1Score++;
-        SaveScores();
-        StopAllPlayers();
-
-        if (player1WinsText != null)
-        {
-            player1WinsText.gameObject.SetActive(true);
-        }
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(true);
-        }
-        UpdateScoreDisplays();
-    }
-
-    private void StopAllPlayers()
-    {
-        Debug.Log("Stopping all players - Game Over!");
-
-        if (playerMovement != null)
-        {
-            playerMovement.isGameOver = true;
-            playerMovement.speed = 0;
-            playerMovement.enabled = false;
-        }
-        if (aiController != null)
-        {
-            aiController.isGameOver = true;
-            aiController.speed = 0;
-            aiController.enabled = false;
-        }
-        if (player2Movement != null)
-        {
-            player2Movement.isGameOver = true;
-            player2Movement.speed = 0;
-            player2Movement.enabled = false;
-        }
-    }
-
     void Update()
     {
         if (gameOver)
         {
-            // R key => Restart
             if (Input.GetKeyDown(KeyCode.R))
             {
                 RestartGame();
             }
-            // T key => Return to Game Mode Selection (changed here)
             if (Input.GetKeyDown(KeyCode.T))
             {
                 ReturnToGameModeSelection();
+            }
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                ShowControlsPanel();
             }
         }
     }
@@ -296,19 +298,26 @@ public class TwoPlayerGameController : MonoBehaviour
         SceneManager.LoadScene(currentScene.name);
     }
 
-    // CHANGED: Instead of ReturnToDifficultySelection(), we use ReturnToGameModeSelection().
     void ReturnToGameModeSelection()
     {
         Debug.Log("Returning to Level Selection Panel...");
 
-        // Reset scores if you want
         ResetScores();
 
-        // Set flag to show the level selection panel instead of game mode panel
         PlayerPrefs.SetInt("ShowLevelSelectPanel", 1);
         PlayerPrefs.Save();
 
-        // Load the main menu scene
+        SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    void ShowControlsPanel()
+    {
+        Debug.Log("Showing Controls Panel...");
+
+        ResetScores();
+        PlayerPrefs.SetInt("ShowControlsPanel", 1);
+        PlayerPrefs.Save();
+
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
@@ -320,6 +329,17 @@ public class TwoPlayerGameController : MonoBehaviour
         PlayerPrefs.DeleteKey(PLAYER2_SCORE_KEY);
         PlayerPrefs.Save();
     }
+
+    void StopAllOtherAudio()
+    {
+        AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+
+        foreach (AudioSource audio in allAudioSources)
+        {
+            if (audio != myAudioSource)
+            {
+                audio.Stop();
+            }
+        }
+    }
 }
-
-
