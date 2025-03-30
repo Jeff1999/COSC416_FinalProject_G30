@@ -184,6 +184,7 @@ MonoBehaviour:
   jumpDistance: 6
   jumpCooldown: 1
   hitSound: {fileID: 8300000, guid: 192232beccd3541b7b1ea8b82448e887, type: 3}
+  hitSound2: {fileID: 8300000, guid: 891c2a81752214dba8bfca8ad9874abb, type: 3}
 --- !u!50 &6136320415041284858
 Rigidbody2D:
   serializedVersion: 5

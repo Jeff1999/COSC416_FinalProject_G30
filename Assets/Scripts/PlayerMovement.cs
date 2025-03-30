@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
     private TrailManager trailManager;
     public AudioClip hitSound; 
+    public AudioClip hitSoundGam; 
     private AudioSource audioSourceB;
    
 
@@ -476,6 +477,7 @@ public class PlayerMovement : MonoBehaviour
 
     void RestartGame()
     {
+        
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }

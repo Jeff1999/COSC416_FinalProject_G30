@@ -1609,6 +1609,7 @@ MonoBehaviour:
   scoreTextPlayer1: {fileID: 1797795056}
   scoreTextPlayer2: {fileID: 1015975250}
   mainMenuSceneName: MainMenuScene
+  hitSoundGam: {fileID: 8300000, guid: 891c2a81752214dba8bfca8ad9874abb, type: 3}
 --- !u!1 &839023549 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 423622275840496182, guid: bbba4285388af4d16932ad07f7ddeeb3, type: 3}

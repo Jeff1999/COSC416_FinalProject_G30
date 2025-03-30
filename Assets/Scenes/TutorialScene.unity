@@ -1178,6 +1178,7 @@ MonoBehaviour:
   scoreTextPlayer1: {fileID: 1797795056}
   scoreTextPlayer2: {fileID: 1015975250}
   mainMenuSceneName: MainMenuScene
+  hitSoundGam: {fileID: 8300000, guid: 891c2a81752214dba8bfca8ad9874abb, type: 3}
 --- !u!4 &801978625
 Transform:
   m_ObjectHideFlags: 0
@@ -1935,7 +1936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bee7374a43895564494bf2b10e3cfda6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 18
+  speed: 1
   isGameOver: 0
   forwardRayDistance: 25
   sideRayDistance: 15
@@ -2320,6 +2321,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 6210216238100960086, guid: 95ba605c8acf64905b6f666ab340fb8f, type: 3}
+      propertyPath: hitSoundGam
+      value: 
+      objectReference: {fileID: 8300000, guid: 891c2a81752214dba8bfca8ad9874abb, type: 3}
     - target: {fileID: 6210216238100960086, guid: 95ba605c8acf64905b6f666ab340fb8f, type: 3}
       propertyPath: bulletPrefab
       value: 

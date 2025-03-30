@@ -26,6 +26,9 @@ public class GameController : MonoBehaviour
     private PlayerMovement playerMovement;
     private AIController aiController;
     private bool gameOver = false;
+    public AudioClip hitSoundGam; 
+    private AudioSource audioSource;
+private AudioSource myAudioSource; // The audio source for your clip
 
     // Score tracking
     private int player1Score = 0;
@@ -33,8 +36,32 @@ public class GameController : MonoBehaviour
     private const string PLAYER1_SCORE_KEY = "Player1Score";
     private const string PLAYER2_SCORE_KEY = "Player2Score";
 
+void StopAllOtherAudio()
+    {
+        AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+
+        foreach (AudioSource audioSource in allAudioSources)
+        {
+            if (audioSource != myAudioSource) // Prevent stopping the audio you're playing
+            {
+                audioSource.Stop();
+            }
+        }
+    }
+    
     void Start()
     {
+
+       audioSource = gameObject.GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1.0f; // 3D sound
+
+        
         // Get components
         playerMovement = player.GetComponent<PlayerMovement>();
         aiController = aiPlayer.GetComponent<AIController>();
@@ -130,6 +157,8 @@ public class GameController : MonoBehaviour
     // Called when both players collide (tie)
     public void TieGame()
     {
+        StopAllOtherAudio();
+            audioSource.PlayOneShot(hitSoundGam);
         if (gameOver) return;
         gameOver = true;
 
@@ -184,15 +213,20 @@ public class GameController : MonoBehaviour
 
         // Show Player 2 Wins text
         if (player2WinsText != null)
-        {
+        { StopAllOtherAudio();
+            audioSource.PlayOneShot(hitSoundGam);
             player2WinsText.gameObject.SetActive(true);
         }
 
         // Show game over panel
         if (gameOverPanel != null)
         {
+            StopAllOtherAudio();
+            audioSource.PlayOneShot(hitSoundGam);
             gameOverPanel.SetActive(true);
         }
+
+        audioSource.PlayOneShot(hitSoundGam);
 
         // Update the score displays
         UpdateScoreDisplays();
@@ -211,6 +245,8 @@ public class GameController : MonoBehaviour
         // Stop player movement too
         if (playerMovement != null)
         {
+             StopAllOtherAudio();
+            audioSource.PlayOneShot(hitSoundGam);
             playerMovement.isGameOver = true;
             playerMovement.speed = 0;
         }
@@ -218,14 +254,20 @@ public class GameController : MonoBehaviour
         // Show Player 1 Wins text
         if (player1WinsText != null)
         {
+            StopAllOtherAudio();
+             audioSource.PlayOneShot(hitSoundGam);
             player1WinsText.gameObject.SetActive(true);
         }
 
         // Show game over panel
         if (gameOverPanel != null)
         {
+             StopAllOtherAudio();
+            audioSource.PlayOneShot(hitSoundGam);
             gameOverPanel.SetActive(true);
         }
+
+        
 
         // Update the score displays
         UpdateScoreDisplays();

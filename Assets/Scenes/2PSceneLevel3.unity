@@ -1527,6 +1527,7 @@ MonoBehaviour:
   scoreTextPlayer1: {fileID: 1797795056}
   scoreTextPlayer2: {fileID: 1015975250}
   mainMenuSceneName: MainMenuScene
+  hitSoundGam: {fileID: 8300000, guid: 891c2a81752214dba8bfca8ad9874abb, type: 3}
 --- !u!1001 &971324508
 PrefabInstance:
   m_ObjectHideFlags: 0
