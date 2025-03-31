@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 6963308916794705748}
   - component: {fileID: 1773301723995560264}
   - component: {fileID: 4585907691013405560}
-  - component: {fileID: 1672258433339623448}
+  - component: {fileID: -5800935377713872137}
   m_Layer: 0
   m_Name: Player2
   m_TagString: Op
@@ -212,7 +212,7 @@ MonoBehaviour:
   showDebugInfo: 1
   jumpStartColor: {r: 1, g: 0, b: 0, a: 1}
   jumpEndColor: {r: 0, g: 1, b: 0, a: 1}
---- !u!114 &1672258433339623448
+--- !u!114 &-5800935377713872137
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -229,7 +229,7 @@ MonoBehaviour:
   bulletSpeed: 40
   speed: 18
   isGameOver: 0
-  jumpDistance: 8
+  jumpDistance: 6
   jumpCooldown: 1
   jumpSound: {fileID: 8300000, guid: d418ff6de95c76246a69d427222078a9, type: 3}
   gameOverText: {fileID: 0}

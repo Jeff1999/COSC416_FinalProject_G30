@@ -46,10 +46,7 @@ public class TwoPlayerGameController : MonoBehaviour
     public TMP_FontAsset gameFont;  // Add this line to reference the font asset
 
     //Random Spawn object
-    [SerializeField] private GameObject Obj; 
-    [SerializeField] private Vector2 position;
-    [SerializeField] private bool random = true;  
-    [SerializeField] private int objCount = 5;
+    [SerializeField] private Vector2 position; 
     
 
     void Start()
@@ -83,12 +80,6 @@ public class TwoPlayerGameController : MonoBehaviour
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
         SetupPlayerCollision();
-        
-        
-        if (ButtonUI.isActive)
-        {
-            onSpawn();
-        }
 
         StartCoroutine(CountdownAndStart());
     }
@@ -298,10 +289,6 @@ public class TwoPlayerGameController : MonoBehaviour
             {
                 ReturnToGameModeSelection();
             }
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                ShowControlsPanel();
-            }
         }
     }
 
@@ -323,17 +310,6 @@ public class TwoPlayerGameController : MonoBehaviour
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
-    void ShowControlsPanel()
-    {
-        Debug.Log("Showing Controls Panel...");
-
-        ResetScores();
-        PlayerPrefs.SetInt("ShowControlsPanel", 1);
-        PlayerPrefs.Save();
-
-        SceneManager.LoadScene(mainMenuSceneName);
-    }
-
     void ResetScores()
     {
         player1Score = 0;
@@ -342,25 +318,13 @@ public class TwoPlayerGameController : MonoBehaviour
         PlayerPrefs.DeleteKey(PLAYER2_SCORE_KEY);
         PlayerPrefs.Save();
     }
-    public void onSpawn(){
-        for(int i = 0; i < objCount; i++)
-        {
-            if(random){
-            float x =  Random.Range(-36,36);
-            float y =  Random.Range(-20,15);
-            Instantiate(Obj, new Vector2(x, y), Quaternion.identity);
-        } else
-        {
-            Instantiate(Obj, position, Quaternion.identity);
-        }
-        }
-        
-    }
-    
 
     void StopAllOtherAudio()
     {
-        AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+        AudioSource[] allAudioSources = Object.FindObjectsByType<AudioSource>(
+            FindObjectsInactive.Exclude,   // or Include if you want to find disabled objects
+            FindObjectsSortMode.None       // how you want them sorted
+        );
 
         foreach (AudioSource audio in allAudioSources)
         {

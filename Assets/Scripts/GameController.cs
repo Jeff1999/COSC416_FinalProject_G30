@@ -36,19 +36,23 @@ private AudioSource myAudioSource; // The audio source for your clip
     private const string PLAYER1_SCORE_KEY = "Player1Score";
     private const string PLAYER2_SCORE_KEY = "Player2Score";
 
-void StopAllOtherAudio()
+    void StopAllOtherAudio()
     {
-        AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+        // Find all active AudioSources in the scene (exclude inactive objects, no sorting)
+        AudioSource[] allAudioSources = Object.FindObjectsByType<AudioSource>(
+            FindObjectsInactive.Exclude,
+            FindObjectsSortMode.None
+        );
 
-        foreach (AudioSource audioSource in allAudioSources)
+        foreach (AudioSource source in allAudioSources)
         {
-            if (audioSource != myAudioSource) // Prevent stopping the audio you're playing
+            if (source != myAudioSource)
             {
-                audioSource.Stop();
+                source.Stop();
             }
         }
     }
-    
+
     void Start()
     {
 
@@ -285,7 +289,7 @@ void StopAllOtherAudio()
                 ReturnToGameModeSelection();
             }
             // Detect 'C' key to go to controls panel
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Input.GetKeyDown(KeyCode.Y))
             {
                 ShowControlsPanel();
             }

@@ -491,21 +491,6 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    void LoadTwoPlayerScene()
-    {
-        try
-        {
-            // If "2PScene" is in Build Settings by name
-            SceneManager.LoadScene("2PScene");
-        }
-        catch (System.Exception)
-        {
-            // Otherwise try loading by path
-            Debug.LogWarning("Failed to load scene by name. Trying by path...");
-            SceneManager.LoadSceneAsync(twoPlayerScenePath);
-        }
-    }
-
     // ----------------------------------------------------------------------
     //                  LEVEL SELECTION METHODS
     // ----------------------------------------------------------------------
@@ -518,7 +503,7 @@ public class MainMenuController : MonoBehaviour
         levelSelectPanel.SetActive(true);
 
         // Reset the level index to 3 (RETURN button)
-        levelIndex = 3;
+        levelIndex = 5;
         UpdateLevelSelection();
     }
 
@@ -538,35 +523,37 @@ public class MainMenuController : MonoBehaviour
         switch (levelIndex)
         {
             case 0: // Level 1
-                // Position arrow next to Level 1
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, 160);
+                    // same as before
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, 230);
                 break;
 
             case 1: // Level 2
-                // Position arrow next to Level 2
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(200, 160);
+                    // now using the old Level 3 coords
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(165, 230);
                 break;
 
             case 2: // Level 3
-                // Position arrow next to Level 3
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(640, 160);
+                    // now using the old Level 4 coords
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(590, 230);
                 break;
 
             case 3: // Level 4
-                // Position arrow next to Level 4
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, -230);
+                    // now using the old Level 2 coords
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(-260, -180);
                 break;
-            case 4: //Level 5
-                // Position arrow next to Level 5
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(640, -230);
+
+            case 4: // Level 5
+                    // same as before
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(590, -180);
                 break;
 
             default:
-                // Default to Return position
-                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(200, -456);
+                // Return position (unchanged)
+                selectionArrowLS.rectTransform.anchoredPosition = new Vector2(200, -362);
                 break;
         }
     }
+
 
     void ConfirmLevelSelection()
     {

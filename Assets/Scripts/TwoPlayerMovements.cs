@@ -115,7 +115,8 @@ public class TwoPlayerMovements : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Semicolon))
+
+            if (Input.GetKeyDown(KeyCode.N))
                 {
                     Shoot();
                 }
@@ -331,38 +332,40 @@ public class TwoPlayerMovements : MonoBehaviour
     }
 
     public void CrashByBullet()
-{
-    if (isGameOver || isJumping) return;
-
-    TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
-
-    isGameOver = true;
-    speed = 0;
-
-    if (crashSound != null && audioSource != null)
     {
-        audioSource.clip = crashSound;
-        audioSource.Play();
-    }
+        if (isGameOver || isJumping) return;
 
-    if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
-    {
-        CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
-        if (crashAnimation != null)
+        TwoPlayerGameController twoPlayerController = FindFirstObjectByType<TwoPlayerGameController>();
+
+        isGameOver = true;
+        speed = 0;
+
+        if (crashSound != null && audioSource != null)
         {
-            crashAnimation.StartCrashAnimation(transform.position);
+            audioSource.clip = crashSound;
+            audioSource.Play();
+        }
+
+        if (crashAnimationFrames != null && crashAnimationFrames.Length > 0)
+        {
+            CrashAnimationController crashAnimation = FindFirstObjectByType<CrashAnimationController>();
+            if (crashAnimation != null)
+            {
+                crashAnimation.StartCrashAnimation(transform.position);
+            }
+        }
+
+        if (twoPlayerController != null)
+        {
+            twoPlayerController.AIPlayerCrashed();
+            // <-- CORRECT (awards a point to Player 1)
+        }
+        else
+        {
+            GameOver();
         }
     }
 
-    if (twoPlayerController != null)
-    {
-        twoPlayerController.PlayerCrashed();
-    }
-    else
-    {
-        GameOver();
-    }
-}
 
     IEnumerator JumpCooldown()
     {

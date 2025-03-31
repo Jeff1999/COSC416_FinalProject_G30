@@ -106,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.C))
             {
                 Shoot();
             }
@@ -470,6 +470,7 @@ public class PlayerMovement : MonoBehaviour
             if (rb != null)
             {
                 rb.linearVelocity = moveDirection.normalized * bulletSpeed;
+
             }
         }
     }
