@@ -17,31 +17,44 @@ Play now!
 
 ---
 
-## Core Concept
-Our game reimagines the classic Tron: Light Cycle arcade experience, where competing riders leave brightly colored trails behind them and must avoid colliding with any trail. The twist introduces a **lateral jump mechanic** that allows players to vault over their own or an opponent's trail, creating opportunities for strategic escapes and maneuvers. Players must carefully time these jumps to transform what would be certain collisions into skillful evasions, resulting in fast-paced, tactical gameplay that builds upon the neon-dueling action of the original Tron.
+# Core Concept
+Our game reimagines the classic Tron: Light Cycle arcade experience, where competing riders leave brightly colored trails behind them and must avoid colliding with any trail. **We introduce two key twists** to enhance the classic formula:
+1. A **lateral jump mechanic** that allows players to vault over their own or an opponent's trail, creating opportunities for strategic escapes and maneuvers.  
+2. A **shooting mechanic** that lets players fire a projectile to eliminate opponents if aimed and timed correctly, adding a new layer of offense and risk-taking.
+
+These additions create fast-paced, tactical gameplay that builds upon the neon-dueling action of the original Tron.
 
 ---
 
-## Core Gameplay
-In each round, players control light cycles that continuously leave glowing trails behind them, requiring careful navigation to avoid collisions with any line—whether their own or an opponent's. The core loop centers on **strategic movement** and the **lateral jump** ability, which lets players vault over trails when cornered. Because colliding with any trail results in immediate knockout, every decision carries high stakes. Visual and audio feedback—through distinctive jump and crash animations, as well as jump and crash sound effects—enhances the experience.
+# Core Gameplay
+In each round, players control light cycles that continuously leave glowing trails behind them, requiring careful navigation to avoid collisions with any line—whether their own or an opponent's. The **core loop** now involves three main elements:
+
+- **Strategic movement** to avoid trail collisions and corner opponents.  
+- **Lateral jump** to vault over trails when cornered.  
+- **Shooting** to pick off an opponent from a distance, but with limited reaction windows.
+
+Because a single collision or successful shot instantly knocks a player out, every decision carries high stakes. Visual and audio feedback—through distinctive jump, shoot, and crash animations, as well as corresponding sound effects—further enriches the experience.
 
 ---
 
-## Game Modes
-### Tutorial Mode
-A single-player experience where players compete against an **AI opponent** designed to teach the fundamentals of gameplay. The AI demonstrates basic strategies while providing a tutorial-like challenge for beginner players to learn the controls and mechanics.
+# Game Modes
 
-### 2-Player Mode
-A competitive mode where two players face off on the same device using the control scheme detailed below. This mode allows friends to challenge each other in direct competition across multiple arenas.
+## Tutorial Mode
+A single-player experience where players compete against an **AI opponent** designed to teach the fundamentals of gameplay. The AI demonstrates basic **movement**, **jumping**, and **shooting** strategies while providing a manageable challenge for beginner players to learn the controls and mechanics.
+
+## 2-Player Mode
+A competitive mode where two players face off on the same device using the control scheme detailed below. This mode allows friends to challenge each other in direct competition across multiple arenas, showcasing **both** the lateral jump and shooting mechanics in intense, head-to-head matches.
 
 ---
 
-## Level & Progression
-### Game Structure
-Our game consists of **five handcrafted levels**, each set in a uniquely designed arena featuring different obstacles and wall patterns. These levels are available in **2-Player mode**, ensuring variety in gameplay environments.
+# Level & Progression
 
-### Scoring System
-GlitchCycle employs a **persistent scoring system** that tracks the total number of rounds won by each player throughout the entire play session. Each time a player wins a round (by being the last cycle standing), their score increments. This running tally continues until players choose to exit the game, providing an ongoing competitive experience without predetermined match endpoints. The scoring display remains visible after every round, allowing players to track their performance history across multiple rounds.
+## Game Structure
+Our game consists of **five handcrafted levels**, each set in a uniquely designed arena featuring different obstacles and wall patterns. These levels are available in **2-Player mode**, ensuring variety in gameplay environments and forcing players to adapt both their jumping and shooting tactics to new layouts.
+
+## Scoring System
+GlitchCycle employs a **persistent scoring system** that tracks the total number of rounds won by each player throughout the entire play session. Each time a player wins a round (by being the last cycle standing—whether through outmaneuvering or successfully shooting opponents), their score increments. This running tally continues until players choose to exit the game, providing an ongoing competitive experience without predetermined match endpoints. The scoring display remains visible after every round, allowing players to track their performance history across multiple rounds.
+
 
 ---
 # Credits
