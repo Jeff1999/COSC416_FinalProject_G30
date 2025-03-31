@@ -34,7 +34,7 @@ Random object spawning implementation adds variability to gameplay by altering t
 - Gameplay disruption through unpredictable obstacles that challenge player adaptability
 
 ### Video Demonstration
-[Link to video showing gameplay in Level 4](https://youtu.be/g1ajp5F-AQI)
+[Link to video showing random object enabled and disabled](https://youtu.be/g1ajp5F-AQI)
 
 ### Relevant Commits
 - [Adding random spawn feature](https://github.com/Jeff1999/COSC416_FinalProject_G30/commit/8b5d3053239c6a51308902cca8115ae9d70ac0ff)
@@ -56,7 +56,7 @@ Level screen polish improves accessibility and customization by allowing players
 - Responsive layout adjustments to support various screen sizes and resolutions
 
 ### Video Demonstration
-[Link to video showing gameplay in Level 4](https://youtu.be/EPrZHXAWk7c)
+[Link to video game panel with 5 level layout and random button](https://youtu.be/EPrZHXAWk7c)
 
 ### Relevant Commits
 - [Adding level 4, 5](https://github.com/Jeff1999/COSC416_FinalProject_G30/commit/46dd82c68d698629ac4f47722a01d8cd46b2c690)
