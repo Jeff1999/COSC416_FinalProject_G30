@@ -4,6 +4,10 @@ A modern reimagining of the classic Tron: Light Cycle (1982) arcade experience, 
 Play now!
 [Click Here to play GlitchCycle!](https://jeffhouse.itch.io/glitchcyclev1)
 
+Watch the Full Video Showacse [Here!](https://youtu.be/7FAw-UNqLKQ)
+
+To see feature implementations as per individual contributions, See the Documentations folder. 
+
 ---
 **Team Name:** Group 30 (G30)  
 
