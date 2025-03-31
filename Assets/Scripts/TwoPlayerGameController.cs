@@ -48,9 +48,9 @@ public class TwoPlayerGameController : MonoBehaviour
     //Random Spawn object
     [SerializeField] private GameObject Obj; 
     [SerializeField] private Vector2 position;
-    [SerializeField] private bool random;  
-    [SerializeField] private bool Spawn;
-    [SerializeField] private int objCount;
+    [SerializeField] private bool random = true;  
+    [SerializeField] private int objCount = 5;
+    
 
     void Start()
     {
@@ -83,7 +83,9 @@ public class TwoPlayerGameController : MonoBehaviour
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
         SetupPlayerCollision();
-        if (Spawn)
+        
+        
+        if (ButtonUI.isActive)
         {
             onSpawn();
         }
@@ -354,6 +356,7 @@ public class TwoPlayerGameController : MonoBehaviour
         }
         
     }
+    
 
     void StopAllOtherAudio()
     {

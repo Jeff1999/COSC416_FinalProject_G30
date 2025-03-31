@@ -1559,7 +1559,7 @@ MonoBehaviour:
   Obj: {fileID: 2126307896}
   position: {x: -3.5, y: -20}
   random: 1
-  Spawn: 1
+  Spawn: 0
   objCount: 5
 --- !u!1 &974266665
 GameObject:
