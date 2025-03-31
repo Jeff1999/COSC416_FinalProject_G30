@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class TwoPlayerGameController : MonoBehaviour
+public class GameWithSpawn : MonoBehaviour
 {
     [Header("Player References")]
     public GameObject player;
@@ -45,12 +45,10 @@ public class TwoPlayerGameController : MonoBehaviour
     // Font reference
     public TMP_FontAsset gameFont;  // Add this line to reference the font asset
 
-    //Random Spawn object
+    //Random Spawn object 
     [SerializeField] private GameObject Obj; 
     [SerializeField] private Vector2 position;
     [SerializeField] private bool random;  
-    [SerializeField] private bool Spawn;
-    [SerializeField] private int objCount;
 
     void Start()
     {
@@ -83,10 +81,6 @@ public class TwoPlayerGameController : MonoBehaviour
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
 
         SetupPlayerCollision();
-        if (Spawn)
-        {
-            onSpawn();
-        }
 
         StartCoroutine(CountdownAndStart());
     }
@@ -340,10 +334,9 @@ public class TwoPlayerGameController : MonoBehaviour
         PlayerPrefs.DeleteKey(PLAYER2_SCORE_KEY);
         PlayerPrefs.Save();
     }
+
     public void onSpawn(){
-        for(int i = 0; i < objCount; i++)
-        {
-            if(random){
+        if(random){
             float x =  Random.Range(-36,36);
             float y =  Random.Range(-20,15);
             Instantiate(Obj, new Vector2(x, y), Quaternion.identity);
@@ -351,8 +344,6 @@ public class TwoPlayerGameController : MonoBehaviour
         {
             Instantiate(Obj, position, Quaternion.identity);
         }
-        }
-        
     }
 
     void StopAllOtherAudio()
